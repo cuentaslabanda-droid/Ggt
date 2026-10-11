@@ -20,6 +20,7 @@ deploy/              servicio systemd e instalador para la Pi
 deploy/asterisk/     configuración de Asterisk para las llamadas de alarma
 docs/cableado.md     conexiones, montaje y calibración
 docs/alarmas.md      alarmas, canales de aviso, línea analógica (HT813) y cortes de luz
+docs/plano-camara.html  plan, modelo del refri, cableado, materiales y montaje (página interactiva)
 ```
 
 ## Material
