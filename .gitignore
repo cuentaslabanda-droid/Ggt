@@ -16,3 +16,16 @@ bin-release/
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
+
+# PlatformIO
+.pio/
+firmware/esp32cam/include/secrets.h
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Runtime data (Raspberry Pi)
+server/data/

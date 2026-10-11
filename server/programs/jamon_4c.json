@@ -1,0 +1,10 @@
+{
+  "name": "Jamón curado en frío (4 °C)",
+  "description": "Todo el proceso a 4 °C. Seca más despacio que a 12-17 °C, así que las fases son más largas: da por terminado el jamón por la merma (30-35 %), no por los días. El salado dura ~1 día por kg: ajusta 'days' de la primera fase al peso de tu pieza. Entre el salado y el asentamiento hay que lavar y secar la pieza.",
+  "phases": [
+    {"name": "Salado", "days": 10, "temp_c": 4, "rh": 88, "fan_duty": 15},
+    {"name": "Post-salado / asentamiento", "days": 60, "temp_c": 4, "rh": 84, "fan_duty": 25},
+    {"name": "Secado", "days": 150, "temp_c": 4, "rh": 80, "fan_duty": 35, "ramp_days": 21},
+    {"name": "Secado final y afinado", "days": 240, "temp_c": 4, "rh": 76, "fan_duty": 30, "ramp_days": 30}
+  ]
+}

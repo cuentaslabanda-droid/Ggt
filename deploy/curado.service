@@ -1,0 +1,15 @@
+[Unit]
+Description=Cámara de curado de jamones (servidor)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=curado
+WorkingDirectory=/opt/curado/server
+EnvironmentFile=/etc/curado.env
+ExecStart=/opt/curado/server/.venv/bin/uvicorn curado.app:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

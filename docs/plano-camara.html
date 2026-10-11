@@ -1,0 +1,1038 @@
+<title>Plano Cámara de Curado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: technical drawing sheet. A narrow parameter rail beside two orthographic
+   views (front + section), then the build blueprint as numbered sheets. */
+:root {
+  --paper: #f2f4f3;
+  --sheet: #fbfcfc;
+  --ink: #1b2830;
+  --ink-2: #51616b;
+  --rule: #cfd8dc;
+  --grid: #e3e9ea;
+  --steel: #dfe5e8;
+  --steel-2: #c3ced3;
+  --frost: #cfe6ef;
+  --cold: #2a7fa8;
+  --ham: #9c3b2e;
+  --ham-fill: #e7c3b5;
+  --humid: #b7791f;
+  --sensor: #1d6b52;
+  --warn: #b42318;
+  --ok: #1d6b52;
+  --power: #c2410c;
+  --data: #2a5fa8;
+  --net: #3f7d3a;
+  --phone: #7a4a8c;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f1518; --sheet: #151d21; --ink: #e2eaec; --ink-2: #9aaab1; --rule: #2c393f;
+    --grid: #1c262b; --steel: #26323a; --steel-2: #34434b; --frost: #1d3a47; --cold: #6cc0e4;
+    --ham: #e08a73; --ham-fill: #5a2f27; --humid: #e0a64a; --sensor: #5ccf9f; --warn: #f2735f;
+    --ok: #5ccf9f; --power: #f08a4b; --data: #79a7ee; --net: #84c27c; --phone: #c79bd8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f1518; --sheet: #151d21; --ink: #e2eaec; --ink-2: #9aaab1; --rule: #2c393f;
+  --grid: #1c262b; --steel: #26323a; --steel-2: #34434b; --frost: #1d3a47; --cold: #6cc0e4;
+  --ham: #e08a73; --ham-fill: #5a2f27; --humid: #e0a64a; --sensor: #5ccf9f; --warn: #f2735f;
+  --ok: #5ccf9f; --power: #f08a4b; --data: #79a7ee; --net: #84c27c; --phone: #c79bd8;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink); font: 15px/1.55 var(--body);
+  padding-inline: 16px; padding-block: 0 48px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: clamp(28px, 4.5vw, 40px); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 22px; font-weight: 600; }
+h3 { font-size: 16px; font-weight: 600; }
+p { margin: 0; max-width: 68ch; }
+.muted { color: var(--ink-2); }
+.small { font-size: 13px; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.label { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+
+/* Title block, like the corner block of a drawing */
+header.title {
+  display: grid; grid-template-columns: 1fr auto; gap: 16px 32px; align-items: end;
+  padding-block: 28px 18px; border-bottom: 2px solid var(--ink);
+}
+.titleblock { display: grid; grid-template-columns: repeat(4, auto); border: 1px solid var(--ink); font-family: var(--mono); font-size: 12px; }
+.titleblock div { padding: 6px 10px; border-left: 1px solid var(--rule); }
+.titleblock div:first-child { border-left: 0; }
+.titleblock b { display: block; font-weight: 500; font-size: 13px; color: var(--ink); }
+.titleblock span { color: var(--ink-2); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; }
+@media (max-width: 760px) { header.title { grid-template-columns: 1fr; } .titleblock { grid-template-columns: repeat(2, auto); } .titleblock div:nth-child(3) { border-left: 0; } .titleblock div:nth-child(n+3) { border-top: 1px solid var(--rule); } }
+
+nav.tabs { display: flex; flex-wrap: wrap; gap: 4px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); padding-block: 8px; }
+nav.tabs a { font-family: var(--mono); font-size: 12.5px; text-decoration: none; color: var(--ink); padding: 6px 10px; border: 1px solid var(--rule); background: var(--sheet); }
+nav.tabs a:hover, nav.tabs a:focus-visible { border-color: var(--ink); outline: none; }
+
+section.sheet { background: var(--sheet); border: 1px solid var(--rule); padding: 22px clamp(14px, 3vw, 28px); display: grid; gap: 18px; scroll-margin-top: 56px; }
+.sheet-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; border-bottom: 1px solid var(--rule); padding-bottom: 10px; }
+.sheet-no { font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+
+/* Plan */
+.status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: baseline; padding: 9px 0; border-top: 1px solid var(--rule); }
+.steps li::before { counter-increment: s; content: counter(s, decimal-leading-zero); font-family: var(--mono); font-size: 12px; color: var(--ink-2); }
+.steps li > div { min-width: 0; }
+.chip { font-family: var(--mono); font-size: 11px; padding: 2px 7px; border: 1px solid currentColor; white-space: nowrap; }
+.chip.done { color: var(--ok); }
+.chip.next { color: var(--humid); }
+.chip.todo { color: var(--ink-2); }
+.chip.bad { color: var(--warn); }
+
+/* Fridge drawing */
+.drawing { display: grid; grid-template-columns: minmax(250px, 300px) 1fr; gap: 22px; align-items: start; }
+@media (max-width: 860px) { .drawing { grid-template-columns: 1fr; } }
+.rail { display: grid; gap: 14px; }
+fieldset { border: 1px solid var(--rule); margin: 0; padding: 10px 12px 12px; display: grid; gap: 8px; }
+legend { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); padding: 0 4px; }
+.field { display: grid; grid-template-columns: 1fr 112px; align-items: center; gap: 8px; font-size: 13.5px; }
+.field input, .field select, select.full { font: 13px var(--mono); color: var(--ink); background: var(--paper); border: 1px solid var(--rule); padding: 4px 6px; width: 100%; }
+.field input:focus-visible, select:focus-visible, .toggles input:focus-visible { outline: 2px solid var(--cold); outline-offset: 1px; }
+.toggles { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13.5px; }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; }
+button.reset { font: 12.5px var(--mono); background: transparent; color: var(--ink); border: 1px solid var(--ink); padding: 6px 10px; cursor: pointer; justify-self: start; }
+button.reset:hover { background: var(--ink); color: var(--sheet); }
+
+.views { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; min-width: 0; }
+@media (max-width: 620px) { .views { grid-template-columns: 1fr; } }
+figure { margin: 0; min-width: 0; display: grid; gap: 6px; }
+figcaption { display: flex; justify-content: space-between; gap: 8px; }
+.view { width: 100%; height: auto; display: block; background: var(--sheet); border: 1px solid var(--rule); }
+
+.results { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0; border: 1px solid var(--rule); }
+.res { padding: 12px 14px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); display: grid; gap: 2px; align-content: start; }
+.res .v { font-family: var(--mono); font-size: 22px; font-variant-numeric: tabular-nums; }
+.res .v small { font-size: 13px; color: var(--ink-2); }
+.res.bad .v { color: var(--warn); }
+.res.good .v { color: var(--ok); }
+.notes { display: grid; gap: 6px; margin: 0; padding-left: 18px; font-size: 14px; }
+.notes li { max-width: 80ch; }
+.callout { border-left: 3px solid var(--warn); padding: 8px 12px; background: var(--paper); font-size: 14px; }
+.callout.ok { border-left-color: var(--ok); }
+
+/* SVG classes */
+.v-shell { fill: var(--steel); stroke: var(--ink); }
+.v-base { fill: var(--steel-2); stroke: var(--ink); }
+.v-freezer { fill: var(--frost); stroke: var(--ink); }
+.v-fresh { fill: var(--sheet); stroke: var(--ink); }
+.v-door { fill: var(--steel-2); stroke: var(--ink); }
+.v-bins { fill: var(--grid); stroke: var(--ink-2); stroke-dasharray: 1 1; }
+.v-hump { fill: var(--steel-2); stroke: var(--ink); }
+.v-crisper { fill: url(#hatch); stroke: var(--ink-2); stroke-dasharray: 1.2 .8; }
+.v-grid { stroke: var(--grid); }
+.v-rod { stroke: var(--ink); stroke-linecap: round; }
+.v-hook { stroke: var(--ink-2); fill: none; }
+.v-ham { fill: var(--ham-fill); stroke: var(--ham); }
+.v-ham.over { stroke: var(--warn); stroke-dasharray: 1.5 1; }
+.v-tray { fill: var(--steel-2); stroke: var(--ink); }
+.v-fan { fill: var(--sheet); stroke: var(--cold); }
+.v-hum { fill: var(--sheet); stroke: var(--humid); }
+.v-cam { fill: var(--ink); stroke: var(--ink); }
+.v-sensor { fill: var(--sensor); stroke: var(--sheet); }
+.v-sensor-zone { fill: none; stroke: var(--sensor); stroke-dasharray: .8 .8; opacity: .7; }
+.v-air { fill: none; stroke: var(--cold); stroke-linecap: round; }
+.v-air-in { fill: none; stroke: var(--cold); stroke-dasharray: 2 1.2; }
+.v-coldplate { fill: var(--frost); stroke: var(--cold); }
+.v-mist { fill: none; stroke: var(--humid); stroke-dasharray: .8 .8; }
+.v-dim { stroke: var(--ink-2); fill: none; }
+.v-text { fill: var(--ink); font-family: var(--mono); }
+.v-text-2 { fill: var(--ink-2); font-family: var(--mono); }
+.v-text-ham { fill: var(--ham); font-family: var(--mono); }
+.v-text-cold { fill: var(--cold); font-family: var(--mono); }
+.v-text-warn { fill: var(--warn); font-family: var(--mono); }
+.v-arrow { fill: var(--cold); }
+.v-arrow-dim { fill: var(--ink-2); }
+@media (prefers-reduced-motion: no-preference) {
+  .v-air.flow { stroke-dasharray: 3 2; animation: flow 3s linear infinite; }
+}
+@keyframes flow { to { stroke-dashoffset: -10; } }
+
+/* Blueprint */
+.scroll { overflow-x: auto; border: 1px solid var(--rule); background: var(--sheet); }
+.scroll svg { display: block; min-width: 860px; width: 100%; height: auto; }
+.w-box { fill: var(--sheet); stroke: var(--ink); }
+.w-zone { fill: none; stroke: var(--ink-2); stroke-dasharray: 4 3; }
+.w-t { fill: var(--ink); font: 13px var(--body); }
+.w-t2 { fill: var(--ink-2); font: 11px var(--mono); }
+.w-tb { fill: var(--ink); font: 600 14px var(--display); }
+.w-zl { fill: var(--ink-2); font: 11px var(--mono); letter-spacing: .08em; }
+.w-data { stroke: var(--data); fill: none; stroke-width: 2; }
+.w-power { stroke: var(--power); fill: none; stroke-width: 2; }
+.w-low { stroke: var(--humid); fill: none; stroke-width: 2; }
+.w-net { stroke: var(--net); fill: none; stroke-width: 2; }
+.w-phone { stroke: var(--phone); fill: none; stroke-width: 2; }
+.w-pin { fill: var(--data); font: 11px var(--mono); }
+.w-pinp { fill: var(--power); font: 11px var(--mono); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 22px; height: 0; border-top: 3px solid; display: inline-block; }
+
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--mono); font-weight: 500; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+td.num { font-family: var(--mono); text-align: right; white-space: nowrap; }
+tfoot td { font-weight: 600; }
+.tablewrap { overflow-x: auto; }
+
+.build { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0; border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); counter-reset: b; }
+.build li { padding: 14px 16px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); display: grid; gap: 6px; align-content: start; }
+.build li h3::before { counter-increment: b; content: "Paso " counter(b) " · "; font-family: var(--mono); font-weight: 400; font-size: 12px; color: var(--ink-2); }
+.build ul { margin: 0; padding-left: 18px; font-size: 14px; display: grid; gap: 3px; }
+
+.photos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0; border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); }
+.photos div { padding: 12px 14px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); display: grid; gap: 4px; align-content: start; }
+.photos b { font-family: var(--display); font-weight: 600; }
+.current { display: grid; grid-template-columns: minmax(240px, 420px) 1fr; gap: 22px; align-items: start; }
+@media (max-width: 760px) { .current { grid-template-columns: 1fr; } }
+.photo { position: relative; border: 1px solid var(--rule); }
+.photo img { display: block; width: 100%; height: auto; }
+.pin {
+  position: absolute; transform: translate(-50%, -50%); width: 24px; height: 24px; border-radius: 50%;
+  display: grid; place-items: center; font: 600 12px var(--mono); color: #fff; background: var(--warn);
+  border: 2px solid #fff; box-shadow: 0 1px 3px rgb(0 0 0 / .4);
+}
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); }
+.facts div { padding: 8px 10px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); display: grid; gap: 2px; }
+.findings { margin: 0; padding-left: 22px; display: grid; gap: 8px; font-size: 14.5px; }
+.findings li { max-width: 75ch; }
+.findings li::marker { font-family: var(--mono); color: var(--warn); font-weight: 600; }
+.v-shelf { stroke: var(--cold); stroke-linecap: round; }
+.v-shelf.glass { stroke: var(--ink-2); }
+.v-stagnant { fill: none; stroke: var(--humid); stroke-dasharray: .8 .8; }
+.v-frost { fill: var(--frost); stroke: var(--cold); stroke-dasharray: .6 .5; }
+.v-thermo { fill: var(--sheet); stroke: var(--ink-2); }
+footer { font-size: 12.5px; color: var(--ink-2); font-family: var(--mono); }
+</style>
+
+<div class="wrap">
+  <header class="title">
+    <div style="display:grid;gap:8px;min-width:0">
+      <div class="label">Proyecto · cámara de curado de jamón a 4 °C</div>
+      <h1>Plano de la cámara de curado</h1>
+      <p class="muted">Plan del proyecto, diagnóstico de la cámara actual, modelo del Midea MDRT210CCNLS con la distribución de piezas, sensores y flujo de aire, y el blueprint de construcción. Exterior y volúmenes de la ficha del fabricante; el reparto interior se afina con tus medidas.</p>
+    </div>
+    <div class="titleblock" aria-label="Datos del plano">
+      <div><span>Equipo</span><b>Midea MDRT210CCNLS</b></div>
+      <div><span>Consigna</span><b>4 °C · 76–88 %HR</b></div>
+      <div><span>Alarma</span><b>&gt; 7 °C</b></div>
+      <div><span>Revisión</span><b>R3 · con medidas</b></div>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Secciones">
+    <a href="#plan">1 · Plan</a>
+    <a href="#actual">2 · Situación actual</a>
+    <a href="#refri">3 · Refrigerador</a>
+    <a href="#cableado">4 · Cableado</a>
+    <a href="#materiales">5 · Materiales</a>
+    <a href="#montaje">6 · Montaje</a>
+    <a href="#fotos">7 · Medidas</a>
+  </nav>
+
+  <!-- 1 · PLAN -->
+  <section class="sheet" id="plan">
+    <div class="sheet-head"><h2>Plan del proyecto</h2><span class="sheet-no">HOJA 1 / 7</span></div>
+    <div class="status-grid">
+      <div style="display:grid;gap:10px">
+        <h3>Hecho (software, en el repositorio)</h3>
+        <ol class="steps">
+          <li><div><b>Firmware ESP32-CAM</b><br><span class="small muted">Control de nevera con protección del compresor, humidificador por ráfagas, ventilador PWM, 3 × SHT31, timelapse con flash.</span></div><span class="chip done">hecho</span></li>
+          <li><div><b>Servidor Raspberry Pi</b><br><span class="small muted">Panel web, histórico, programas de curado, merma por pieza, timelapse.</span></div><span class="chip done">hecho</span></li>
+          <li><div><b>Programa a 4 °C</b><br><span class="small muted">Salado 88 % → asentamiento 84 % → secado 80 % → afinado 76 %, todo a 4 °C.</span></div><span class="chip done">hecho</span></li>
+          <li><div><b>Alarmas</b><br><span class="small muted">&gt; 7 °C, nevera que no enfría, sin datos. Correo, Telegram, WhatsApp, SMS, llamada por línea analógica (Asterisk + HT813).</span></div><span class="chip done">hecho</span></li>
+        </ol>
+      </div>
+      <div style="display:grid;gap:10px">
+        <h3>Siguiente (físico, en este orden)</h3>
+        <ol class="steps">
+          <li><div><b>Fotos del interior y modelo exacto</b><br><span class="small muted">Midea MDRT210CCNLS, descongelación manual (hoja 2).</span></div><span class="chip done">hecho</span></li>
+          <li><div><b>Medidas interiores con flexómetro</b><br><span class="small muted">Alto, ancho y alturas tomadas; falta el fondo (hoja 7).</span></div><span class="chip next">casi</span></li>
+          <li><div><b>Cambiar repisas de vidrio por rejillas</b><br><span class="small muted">Lo que más mejora el aire hoy, sin electrónica (hoja 2).</span></div><span class="chip next">ahora</span></li>
+          <li><div><b>Diseño final del flujo de aire</b><br><span class="small muted">Ventilador, sensores, humidificador y niveles de colgado.</span></div><span class="chip next">con medidas</span></li>
+          <li><div><b>Compras</b><br><span class="small muted">Lista en la hoja 4.</span></div><span class="chip todo">pendiente</span></li>
+          <li><div><b>Caja de control y cableado</b></div><span class="chip todo">pendiente</span></li>
+          <li><div><b>Montaje interior</b></div><span class="chip todo">pendiente</span></li>
+          <li><div><b>Calibración con sal (12 h)</b></div><span class="chip todo">pendiente</span></li>
+          <li><div><b>Prueba en vacío 72 h</b><br><span class="small muted">4 °C / 80 % sin carga: uso del compresor, diferencia arriba-abajo.</span></div><span class="chip todo">pendiente</span></li>
+          <li><div><b>Prueba de alarmas</b><br><span class="small muted">Desenchufar la nevera y confirmar que llega la llamada.</span></div><span class="chip todo">pendiente</span></li>
+          <li><div><b>Primer curado</b><br><span class="small muted">Con la cámara controlada: un lote de piernas con separación entre piezas.</span></div><span class="chip todo">pendiente</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · CURRENT -->
+  <section class="sheet" id="actual">
+    <div class="sheet-head"><h2>Situación actual</h2><span class="sheet-no">HOJA 2 / 7 · foto del interior</span></div>
+    <div class="current">
+      <figure class="photo">
+        <img src="interior-actual.jpg" alt="Interior del refrigerador con piernas curándose, colgadas y sobre repisas de vidrio" width="900" height="1200">
+        <span class="pin" style="left:58%;top:12%">1</span>
+        <span class="pin" style="left:84%;top:23%">2</span>
+        <span class="pin" style="left:40%;top:25%">3</span>
+        <span class="pin" style="left:30%;top:43%">4</span>
+        <span class="pin" style="left:40%;top:58%">5</span>
+        <span class="pin" style="left:67%;top:79%">5</span>
+        <span class="pin" style="left:22%;top:67%">6</span>
+        <span class="pin" style="left:50%;top:93%">7</span>
+        <span class="pin" style="left:95%;top:57%">8</span>
+      </figure>
+      <div style="display:grid;gap:14px;min-width:0">
+        <div class="facts">
+          <div><span class="label">Modelo</span><b>Midea MDRT210CCNLS</b></div>
+          <div><span class="label">Exterior</span><b class="mono">143 × 55 × 55 cm</b></div>
+          <div><span class="label">Refrigerador</span><b class="mono">163 L</b></div>
+          <div><span class="label">Congelador</span><b class="mono">41 L</b></div>
+          <div><span class="label">Descongelación</span><b>Manual</b></div>
+          <div><span class="label">Eléctrico</span><b class="mono">115 V · 1 A · 150 W</b></div>
+        </div>
+        <ol class="findings">
+          <li><b>Escarcha en techo y pared trasera.</b> El frío sale de una placa en la pared del fondo, no de un ventilador. Esa placa bajo cero <b>atrapa el agua del aire</b>: compite con el humidificador y hay que descongelar cada pocas semanas.</li>
+          <li><b>Termostato y luz.</b> Ponlo al máximo frío cuando el relé tome el control. Ningún sensor junto a él.</li>
+          <li><b>Piezas acostadas sobre vidrio y casi tocando la pared fría.</b> La cara de abajo no se seca y la de atrás se seca de más. Hay que voltearlas cada día o pasarlas a rejilla, a 5 cm de la pared.</li>
+          <li><b>Las repisas de vidrio cortan el aire.</b> Dividen el refri en cajas cerradas: el aire no sube ni baja y cada nivel tiene su propio clima. Es lo que más conviene cambiar.</li>
+          <li><b>Piezas tocándose.</b> Donde se tocan queda húmedo y salen mohos o zonas blandas. Necesitan 3–5 cm entre sí.</li>
+          <li><b>Barra negra y ganchos de repisa.</b> Buena idea: colgar es mejor que acostar. Se aprovecha para los niveles de colgado.</li>
+          <li><b>Cesta inferior con escurrimientos.</b> Sirve como bandeja de goteo; límpiala con frecuencia para que no críe moho.</li>
+          <li><b>Repisas de la puerta.</b> Restan unos 8 cm de fondo; si se quitan, cabe otra fila.</li>
+        </ol>
+        <p class="small muted">Hoy hay unas 13 piezas. Con 3–5 cm de aire entre ellas caben menos, pero se secan parejo; el modelo de la hoja 3 calcula cuántas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · FRIDGE -->
+  <section class="sheet" id="refri">
+    <div class="sheet-head"><h2>Modelo del refrigerador</h2><span class="sheet-no">HOJA 3 / 7 · cotas en cm</span></div>
+    <div class="drawing">
+      <div class="rail">
+        <fieldset>
+          <legend>Exterior · ficha Midea</legend>
+          <label class="field">Alto <input id="H" type="number" min="80" max="220" step="0.5"></label>
+          <label class="field">Ancho <input id="W" type="number" min="40" max="100" step="0.5"></label>
+          <label class="field">Fondo <input id="D" type="number" min="40" max="90" step="0.5"></label>
+        </fieldset>
+        <fieldset>
+          <legend>Interior (alto y ancho medidos)</legend>
+          <label class="field">Alto congelador <input id="freezerH" type="number" min="10" max="60" step="0.5"></label>
+          <label class="field">Techo <input id="topWall" type="number" min="2" max="15" step="0.5"></label>
+          <label class="field">Divisor <input id="divider" type="number" min="2" max="15" step="0.5"></label>
+          <label class="field">Pared lateral <input id="sideWall" type="number" min="2" max="12" step="0.5"></label>
+          <label class="field">Pared trasera <input id="backWall" type="number" min="2" max="15" step="0.5"></label>
+          <label class="field">Puerta (grosor) <input id="doorT" type="number" min="3" max="15" step="0.5"></label>
+          <label class="field">Repisas de puerta <input id="bins" type="number" min="0" max="15" step="0.5"></label>
+          <label class="field">Joroba compresor alto <input id="humpH" type="number" min="0" max="30" step="0.5"></label>
+          <label class="field">Joroba compresor fondo <input id="humpD" type="number" min="0" max="30" step="0.5"></label>
+          <label class="field">Base y patas <input id="base" type="number" min="0" max="20" step="0.5"></label>
+          <label class="field">Enfriamiento
+            <select id="cooling"><option value="frost">Placa fría (manual)</option><option value="nofrost">No Frost</option></select>
+          </label>
+        </fieldset>
+        <fieldset>
+          <legend>Carga</legend>
+          <label class="field">Pieza
+            <select id="piece"><option value="pierna">Pierna enrollada</option><option value="paleta">Paleta</option><option value="jamon">Jamón entero</option><option value="custom">A medida</option></select>
+          </label>
+          <label class="field">Largo <input id="L" type="number" min="20" max="100" step="1"></label>
+          <label class="field">Ancho <input id="PW" type="number" min="8" max="40" step="1"></label>
+          <label class="field">Grosor <input id="PT" type="number" min="5" max="30" step="1"></label>
+          <label class="field">Peso (kg) <input id="kg" type="number" min="1" max="20" step="0.5"></label>
+          <label class="field">Gancho + cuerda <input id="hook" type="number" min="2" max="25" step="0.5"></label>
+          <label class="field">Separación aire <input id="gap" type="number" min="2" max="15" step="0.5"></label>
+          <label class="field">Libre abajo (bandeja) <input id="tray" type="number" min="2" max="30" step="1"></label>
+          <label class="field">Niveles
+            <select id="shelves"><option value="rejilla">Rejilla</option><option value="vidrio">Vidrio</option></select>
+          </label>
+        </fieldset>
+        <fieldset>
+          <legend>Ventilador</legend>
+          <label class="field">Caudal (CFM) <input id="cfm" type="number" min="5" max="120" step="1"></label>
+          <label class="field">Duty base (%) <input id="duty" type="number" min="0" max="100" step="5"></label>
+        </fieldset>
+        <fieldset>
+          <legend>Capas</legend>
+          <div class="toggles">
+            <label><input type="checkbox" id="lyHams" checked> Piezas</label>
+            <label><input type="checkbox" id="lyAir" checked> Aire</label>
+            <label><input type="checkbox" id="lySensors" checked> Sensores</label>
+            <label><input type="checkbox" id="lyGear" checked> Equipos</label>
+            <label><input type="checkbox" id="lyDims" checked> Cotas</label>
+            <label><input type="checkbox" id="lyNow" checked> Alturas de hoy</label>
+          </div>
+        </fieldset>
+        <button class="reset" type="button" id="resetBtn">Volver a las medidas tomadas</button>
+      </div>
+
+      <div style="display:grid;gap:16px;min-width:0">
+        <div class="views">
+          <figure>
+            <figcaption><span class="label">Vista frontal · puerta abierta</span><span class="label" id="capFront"></span></figcaption>
+            <svg class="view" id="front" role="img" aria-label="Vista frontal del refrigerador"></svg>
+          </figure>
+          <figure>
+            <figcaption><span class="label">Corte lateral · puerta a la izquierda</span><span class="label" id="capSide"></span></figcaption>
+            <svg class="view" id="side" role="img" aria-label="Corte lateral del refrigerador con el flujo de aire"></svg>
+          </figure>
+        </div>
+        <div class="results" id="results"></div>
+        <div id="verdict" style="display:grid;gap:10px"></div>
+        <ul class="notes">
+          <li><b>Aire.</b> El ventilador, arriba al frente, empuja el aire hacia la placa fría del fondo. El aire se enfría, baja pegado a la pared trasera y vuelve por el suelo hacia la puerta. Las piezas quedan en el centro del bucle y reciben aire suave por todas sus caras, sin chorro directo. Con repisas de vidrio el bucle no existe: por eso van rejillas.</li>
+          <li><b>S1 arriba</b> mide el aire mezclado lejos de la entrada de frío. <b>S2 medio</b> va en el hueco entre los dos niveles, sin tocar piezas. <b>S3 abajo</b> va al frente, donde el aire se estanca y la humedad es mayor. Si difieren más de 1,5 °C o 6 %HR, el ventilador sube a refuerzo.</li>
+          <li><b>Humidificador</b> sobre la joroba del compresor, al fondo y abajo, lejos de la placa fría: así la niebla se mezcla por el suelo antes de tocar la placa (donde se volvería escarcha) y antes de llegar a los sensores (≥ 30 cm de la boquilla).</li>
+          <li><b>Descongelación.</b> Al ser manual, la escarcha crece más rápido con el humidificador funcionando. Cuando pase de unos 5 mm, descongela: saca las piezas a otro refri o a una hielera con hielo, y vuelve a meterlas cuando la cámara esté otra vez a 4 °C.</li>
+          <li><b>Cámara</b> bajo el techo, al frente y del lado contrario al termostato, inclinada hacia las piezas. La electrónica de potencia queda fuera, en una caja en el costado.</li>
+          <li><b>Congelador.</b> Al controlar el compresor para 4 °C, el congelador ya no congela de forma fiable. No guardes comida ahí.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · WIRING -->
+  <section class="sheet" id="cableado">
+    <div class="sheet-head"><h2>Blueprint de cableado</h2><span class="sheet-no">HOJA 4 / 7</span></div>
+    <div class="legend">
+      <span><i style="border-color:var(--data)"></i> Datos / señal</span>
+      <span><i style="border-color:var(--humid)"></i> 5 V / 12 V</span>
+      <span><i style="border-color:var(--power)"></i> 120 V AC</span>
+      <span><i style="border-color:var(--net)"></i> Red / WiFi</span>
+      <span><i style="border-color:var(--phone)"></i> Línea telefónica</span>
+    </div>
+    <div class="scroll">
+      <svg viewBox="0 0 1000 600" role="img" aria-label="Diagrama de cableado del sistema">
+        <!-- zones -->
+        <rect class="w-zone" x="20" y="40" width="280" height="520"/>
+        <text class="w-zl" x="30" y="32">DENTRO DE LA NEVERA</text>
+        <rect class="w-zone" x="330" y="40" width="330" height="520"/>
+        <text class="w-zl" x="340" y="32">CAJA DE CONTROL (COSTADO, FUERA)</text>
+        <rect class="w-zone" x="690" y="40" width="290" height="520"/>
+        <text class="w-zl" x="700" y="32">RED, ALARMAS Y RESPALDO</text>
+
+        <!-- sensors -->
+        <rect class="w-box" x="40" y="70" width="120" height="44"/><text class="w-tb" x="50" y="90">S1 arriba</text><text class="w-t2" x="50" y="106">SHT31 · 0x44</text>
+        <rect class="w-box" x="40" y="130" width="120" height="44"/><text class="w-tb" x="50" y="150">S2 medio</text><text class="w-t2" x="50" y="166">0x45 · ADR→VIN</text>
+        <rect class="w-box" x="40" y="190" width="120" height="44"/><text class="w-tb" x="50" y="210">S3 abajo</text><text class="w-t2" x="50" y="226">0x44 · bus B</text>
+
+        <!-- ESP32-CAM inside (in its box) -->
+        <rect class="w-box" x="190" y="70" width="95" height="210"/>
+        <text class="w-tb" x="200" y="92">ESP32-CAM</text>
+        <text class="w-t2" x="200" y="108">en caja con</text>
+        <text class="w-t2" x="200" y="121">ventana</text>
+        <text class="w-pin" x="200" y="148">G15 SCL</text>
+        <text class="w-pin" x="200" y="166">G14 SDA-A</text>
+        <text class="w-pin" x="200" y="184">G13 SDA-B</text>
+        <text class="w-pin" x="200" y="210">G2 → relé 1</text>
+        <text class="w-pin" x="200" y="228">G3 → relé 2</text>
+        <text class="w-pin" x="200" y="246">G12 → MOSFET</text>
+        <text class="w-t2" x="200" y="268">5V · GND</text>
+
+        <!-- sensor bus -->
+        <path class="w-data" d="M160 92 H175 V144 H190"/>
+        <path class="w-data" d="M160 152 H175"/>
+        <path class="w-data" d="M160 212 H180 V180 H190"/>
+
+        <!-- fan, humidifier inside -->
+        <rect class="w-box" x="40" y="300" width="120" height="44"/><text class="w-tb" x="50" y="320">Ventilador</text><text class="w-t2" x="50" y="336">12 V · 92 mm</text>
+        <rect class="w-box" x="40" y="370" width="120" height="44"/><text class="w-tb" x="50" y="390">Humidificador</text><text class="w-t2" x="50" y="406">ultrasónico</text>
+        <rect class="w-box" x="40" y="440" width="245" height="44"/><text class="w-tb" x="50" y="460">Compresor de la nevera</text><text class="w-t2" x="50" y="476">termostato al máximo frío</text>
+
+        <!-- control box -->
+        <rect class="w-box" x="350" y="70" width="140" height="60"/><text class="w-tb" x="360" y="92">Fuente 5 V 3 A</text><text class="w-t2" x="360" y="110">+ condensador 1000 µF</text>
+        <rect class="w-box" x="510" y="70" width="135" height="60"/><text class="w-tb" x="520" y="92">Fuente 12 V 1 A</text><text class="w-t2" x="520" y="110">ventilador</text>
+        <rect class="w-box" x="350" y="190" width="180" height="90"/>
+        <text class="w-tb" x="360" y="212">Relé 2 canales 5 V</text>
+        <text class="w-t2" x="360" y="232">Canal 1 · nevera (≥ 10 A, mejor 30 A)</text>
+        <text class="w-t2" x="360" y="250">Canal 2 · humidificador</text>
+        <text class="w-t2" x="360" y="268">corta la fase; neutro y tierra directos</text>
+        <rect class="w-box" x="350" y="300" width="180" height="70"/>
+        <text class="w-tb" x="360" y="322">MOSFET AO3400</text>
+        <text class="w-t2" x="360" y="340">100 Ω gate · 10 kΩ GND</text>
+        <text class="w-t2" x="360" y="356">diodo en el ventilador</text>
+        <rect class="w-box" x="350" y="420" width="180" height="70"/>
+        <text class="w-tb" x="360" y="442">Contactos 120 V</text>
+        <text class="w-t2" x="360" y="460">caja cerrada · fusible</text>
+        <text class="w-t2" x="360" y="476">tierra conectada</text>
+        <rect class="w-box" x="550" y="420" width="95" height="70"/>
+        <text class="w-tb" x="560" y="442">Pared</text><text class="w-t2" x="560" y="460">120 V AC</text>
+
+        <!-- 5V to ESP and relay -->
+        <path class="w-low" d="M350 100 H300 V262 H285"/>
+        <path class="w-low" d="M420 130 V190"/>
+        <!-- 12V to fan via mosfet -->
+        <path class="w-low" d="M577 130 V335 H530"/>
+        <path class="w-low" d="M350 335 H175 V322 H160"/>
+        <!-- signals from ESP -->
+        <path class="w-data" d="M285 206 H320 V225 H350"/>
+        <path class="w-data" d="M285 224 H312 V243 H350"/>
+        <path class="w-data" d="M285 242 H305 V320 H350"/>
+        <!-- mains -->
+        <path class="w-power" d="M597 490 V520 H440 V490"/>
+        <path class="w-power" d="M520 420 V400 H545 V262 H530"/>
+        <path class="w-power" d="M380 280 V300 M380 370 V400 H200 V392 H160"/>
+        <path class="w-power" d="M360 280 H340 V510 H285 V478"/>
+        <text class="w-pinp" x="205" y="396">canal 2</text>
+        <text class="w-pinp" x="290" y="505">canal 1</text>
+
+        <!-- network side -->
+        <rect class="w-box" x="710" y="70" width="250" height="70"/>
+        <text class="w-tb" x="720" y="92">Raspberry Pi</text>
+        <text class="w-t2" x="720" y="110">panel :8000 · alarmas · Asterisk</text>
+        <text class="w-t2" x="720" y="126">IP fija en el router</text>
+        <rect class="w-box" x="710" y="170" width="120" height="56"/><text class="w-tb" x="720" y="192">Router WiFi</text><text class="w-t2" x="720" y="210">internet</text>
+        <rect class="w-box" x="850" y="170" width="110" height="56"/><text class="w-tb" x="860" y="192">HT813</text><text class="w-t2" x="860" y="210">FXO → SIP</text>
+        <rect class="w-box" x="850" y="260" width="110" height="56"/><text class="w-tb" x="860" y="282">Línea</text><text class="w-t2" x="860" y="300">analógica</text>
+        <rect class="w-box" x="710" y="350" width="250" height="90"/>
+        <text class="w-tb" x="720" y="372">SAI / UPS 600 VA</text>
+        <text class="w-t2" x="720" y="392">Pi · router · HT813 · fuente 5 V</text>
+        <text class="w-t2" x="720" y="410">(la nevera NO va al SAI)</text>
+        <text class="w-t2" x="720" y="428">avisa en un corte de luz</text>
+        <rect class="w-box" x="710" y="470" width="250" height="60"/>
+        <text class="w-tb" x="720" y="492">Avisos</text>
+        <text class="w-t2" x="720" y="510">correo · Telegram · WhatsApp · llamada</text>
+
+        <path class="w-net" d="M770 140 V170"/>
+        <path class="w-net" d="M830 198 H850"/>
+        <path class="w-net" d="M285 120 H300 V20 H770 V70" stroke-dasharray="6 4"/>
+        <text class="w-t2" x="470" y="14">WiFi · telemetría y fotos cada 30 s</text>
+        <path class="w-phone" d="M905 226 V260"/>
+        <path class="w-net" d="M835 140 V150 H960 V500 H960" stroke-dasharray="6 4"/>
+        <path class="w-power" d="M710 395 H680 V540 H597 V520"/>
+        <path class="w-power" d="M720 350 V340 H690 V100 H710"/>
+      </svg>
+    </div>
+    <p class="small muted">Detalle de pines, resistencias y advertencias en <span class="mono">docs/cableado.md</span>; línea telefónica y HT813 en <span class="mono">docs/alarmas.md</span>. ⚠️ El lado de 120 V va en caja cerrada, con fusible y tierra.</p>
+  </section>
+
+  <!-- 4 · BOM -->
+  <section class="sheet" id="materiales">
+    <div class="sheet-head"><h2>Lista de materiales</h2><span class="sheet-no">HOJA 5 / 7 · precios orientativos en USD</span></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Parte</th><th>Para qué</th><th>Cant.</th><th style="text-align:right">Aprox.</th></tr></thead>
+        <tbody id="bom"></tbody>
+        <tfoot><tr><td colspan="3">Total aproximado</td><td class="num" id="bomTotal"></td></tr></tfoot>
+      </table>
+    </div>
+    <p class="small muted">Rangos orientativos de tiendas en línea; el HT813 se encontró entre 64 y 97 USD. Verifica precios y disponibilidad en tu país.</p>
+  </section>
+
+  <!-- 5 · BUILD -->
+  <section class="sheet" id="montaje">
+    <div class="sheet-head"><h2>Secuencia de montaje</h2><span class="sheet-no">HOJA 6 / 7</span></div>
+    <ol class="build">
+      <li><h3>Preparar el refri</h3><ul><li>Pasar las piezas a otro refri o a una hielera con hielo.</li><li>Descongelar la placa fría, limpiar y secar; lavar la cesta inferior.</li><li>Termostato al máximo frío.</li><li>Medir (hoja 7).</li></ul></li>
+      <li><h3>Caja de control</h3><ul><li>Fuentes, relés y MOSFET en caja cerrada en el costado.</li><li>Enchufe de la nevera y del humidificador a través de los relés.</li><li>Fusible y tierra.</li></ul></li>
+      <li><h3>Paso de cables</h3><ul><li>Por la junta de la puerta, lado bisagra arriba, con cable plano, o por el desagüe.</li><li>Nunca taladrar paredes: van tubos de refrigerante.</li></ul></li>
+      <li><h3>Interior</h3><ul><li>Repisas de vidrio fuera; rejillas inoxidables en los rieles.</li><li>Barras de colgado bajo cada rejilla, a la altura que da el modelo (hoja 3).</li><li>Cesta o bandeja de goteo en el suelo.</li><li>Ventilador arriba al frente soplando hacia la placa fría; humidificador abajo al fondo.</li></ul></li>
+      <li><h3>Sensores y cámara</h3><ul><li>S1, S2 y S3 a las alturas del plano, a 3 cm de las paredes y lejos del termostato y de la placa fría.</li><li>ESP32-CAM arriba al frente, con barniz protector.</li></ul></li>
+      <li><h3>Software</h3><ul><li><span class="mono">sudo ./deploy/install.sh</span> en la Pi.</li><li>Grabar la ESP32 (sin el relé en GPIO3).</li><li>Probar salidas con "Forzar salidas" del panel.</li></ul></li>
+      <li><h3>Calibrar</h3><ul><li>Prueba de la sal: 12 h en táper con sal húmeda = 75,3 %HR.</li><li>Cargar correcciones en el panel.</li></ul></li>
+      <li><h3>Prueba en vacío</h3><ul><li>72 h a 4 °C / 80 % sin carga.</li><li>Nevera &lt; 60 % del tiempo y diferencia arriba-abajo &lt; 1,5 °C.</li></ul></li>
+      <li><h3>Alarmas y respaldo</h3><ul><li>Configurar canales y probar con "Enviar mensaje de prueba".</li><li>Desenchufar la nevera y verificar el aviso de "nevera no enfría" y la llamada.</li><li>SAI y heartbeat.</li></ul></li>
+    </ol>
+  </section>
+
+  <!-- 6 · PHOTOS -->
+  <section class="sheet" id="fotos">
+    <div class="sheet-head"><h2>Medidas</h2><span class="sheet-no">HOJA 7 / 7 · cm desde el suelo del compartimento</span></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Medida</th><th style="text-align:right">Valor</th><th>Fuente</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td>Exterior (alto × ancho × fondo)</td><td class="num">143 × 55 × 55</td><td class="muted">ficha Midea</td><td><span class="chip done">dato</span></td></tr>
+          <tr><td>Alto interior del refrigerador</td><td class="num">≈ 100</td><td class="muted">foto del techo</td><td><span class="chip done">medido</span></td></tr>
+          <tr><td>Ancho interior</td><td class="num">≈ 48</td><td class="muted">foto horizontal</td><td><span class="chip done">medido</span></td></tr>
+          <tr><td>Borde de la cesta inferior</td><td class="num">≈ 21</td><td class="muted">foto de la fila de abajo</td><td><span class="chip done">medido</span></td></tr>
+          <tr><td>Barra negra (fila de abajo)</td><td class="num">≈ 40,5</td><td class="muted">foto de la fila de abajo</td><td><span class="chip done">medido</span></td></tr>
+          <tr><td>Repisa de la que cuelga la fila de arriba</td><td class="num">≈ 63</td><td class="muted">cruce de dos fotos</td><td><span class="chip next">confirmar</span></td></tr>
+          <tr><td>Fondo interior (pared trasera → puerta)</td><td class="num">≈ 42</td><td class="muted">estimado</td><td><span class="chip bad">falta</span></td></tr>
+          <tr><td>Lo que entran las repisas de la puerta</td><td class="num">≈ 10</td><td class="muted">estimado de la foto</td><td><span class="chip bad">falta</span></td></tr>
+          <tr><td>Escalón del compresor al fondo (alto × fondo)</td><td class="num">≈ 15 × 14</td><td class="muted">estimado</td><td><span class="chip bad">falta</span></td></tr>
+          <tr><td>Pierna típica (largo × diámetro)</td><td class="num">≈ 24 × 16</td><td class="muted">estimado de las fotos</td><td><span class="chip bad">falta</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted">Las medidas de las fotos tienen algo de perspectiva: dan ±2 cm. Para cerrar el modelo faltan el fondo, cuánto entran las repisas de la puerta, si hay escalón del compresor al fondo (debajo de la cesta) y una pierna medida a mano (largo, diámetro y peso).</p>
+  </section>
+
+  <footer>Repositorio: cuentaslabanda-droid/ggt · rama claude/ham-curing-system-ls8hp9 · docs/plano-camara.html</footer>
+</div>
+
+<script>
+"use strict";
+// Midea MDRT210CCNLS: 1430 x 550 x 550 mm, 163 L fresh + 41 L freezer, manual
+// defrost (cold plate). Measured (R3): fresh compartment ~100 cm high and
+// ~48 cm wide. Depth is still estimated.
+const DEFAULTS = {
+  H: 143, W: 55, D: 55, freezerH: 22, topWall: 3, divider: 5, sideWall: 3.5, backWall: 6, doorT: 7,
+  bins: 10, humpH: 15, humpD: 14, base: 8, bottomWall: 5, cooling: "frost",
+  piece: "pierna", L: 24, PW: 17, PT: 15, kg: 2.5, hook: 5, gap: 3, tray: 6, shelves: "rejilla", cfm: 32, duty: 30,
+};
+// Heights measured from the compartment floor in the photos (R3).
+const CURRENT = [
+  { h: 21, label: "cesta" },
+  { h: 40.5, label: "barra negra" },
+  { h: 63, label: "repisa (ganchos)" },
+];
+const PIECES = {
+  pierna: { L: 24, PW: 17, PT: 15, kg: 2.5, hook: 5 },
+  paleta: { L: 58, PW: 22, PT: 13, kg: 6, hook: 6 },
+  jamon: { L: 75, PW: 28, PT: 16, kg: 10, hook: 6 },
+};
+const ROD = 3, CLEAR = 2;
+let TRAY = 6; // free space kept at the bottom for the drip tray (input "tray")
+const NUM_KEYS = ["H","W","D","freezerH","topWall","divider","sideWall","backWall","doorT","bins","humpH","humpD","base","L","PW","PT","kg","hook","gap","tray","cfm","duty"];
+const STORE = "plano-camara-v3";
+
+let P = { ...DEFAULTS };
+try { const s = JSON.parse(localStorage.getItem(STORE) || "null"); if (s) P = { ...DEFAULTS, ...s }; } catch (e) {}
+
+const $ = (id) => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent) {
+  const n = document.createElementNS(NS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function txt(parent, x, y, s, cls = "v-text", size = 2.2, anchor = "start") {
+  const t = el("text", { x, y, class: cls, "font-size": size, "text-anchor": anchor }, parent);
+  t.textContent = s;
+  return t;
+}
+const fmt = (v, d = 0) => Number(v).toLocaleString("es-MX", { minimumFractionDigits: d, maximumFractionDigits: d });
+
+function fitCount(span, size, gap) {
+  const wall = Math.max(2, gap * 0.6);
+  return Math.max(0, Math.floor((span - 2 * wall + gap) / (size + gap)));
+}
+
+function geometry(p) {
+  TRAY = p.tray;
+  const g = {};
+  g.innerW = p.W - 2 * p.sideWall;
+  g.innerD = p.D - p.backWall - p.doorT;
+  g.yFreezer = p.topWall;
+  g.y0 = p.topWall + p.freezerH + p.divider;      // top of the fresh compartment
+  g.y1 = p.H - p.base - p.bottomWall;             // its floor
+  g.freshH = g.y1 - g.y0;
+  g.freezerL = g.innerW * (g.innerD - 2) * p.freezerH / 1000;
+  g.freshL = (g.innerW * g.innerD * g.freshH - g.innerW * p.humpD * p.humpH) / 1000;
+  g.totalL = g.freezerL + g.freshL;
+
+  // Hanging levels: each needs rod + hook/string + piece + clearance.
+  g.levelNeed = ROD + p.hook + p.L + CLEAR;
+  g.levels = Math.max(0, Math.min(4, Math.floor((g.freshH - TRAY) / g.levelNeed)));
+  // Space left above the hanging levels becomes a wire rack for lying pieces
+  // (they need turning, but nothing is wasted).
+  const leftover = g.freshH - TRAY - g.levels * g.levelNeed;
+  g.rackH = g.levels && leftover >= p.PT + 5 ? leftover : 0;
+  g.levelH = g.levels ? (g.freshH - TRAY - g.rackH) / g.levels : g.freshH - TRAY;
+  g.fitsHeight = g.levels > 0;
+  g.rodY = (i) => g.y0 + g.rackH + i * g.levelH + ROD;
+
+  const best = (depth) => [
+    { name: "de canto", across: p.PT, deep: p.PW },
+    { name: "de frente", across: p.PW, deep: p.PT },
+  ].map((o) => {
+    const cols = fitCount(g.innerW, o.across, p.gap);
+    const rows = Math.min(2, fitCount(depth, o.deep, p.gap));
+    return { ...o, cols, rows, n: cols * rows, depth };
+  }).sort((a, b) => b.n - a.n || a.rows - b.rows)[0];
+  g.layout = best(g.innerD - p.bins);
+
+  // The lowest level shares the floor with the compressor step, where the
+  // humidifier sits: if the pieces reach that height they hang in front of it.
+  const lowest = Math.max(0, g.levels - 1);
+  g.lowBottom = g.rodY(lowest) + p.hook + p.L;
+  // The humidifier takes one corner of the step, so only pieces that would
+  // hang into the step itself (more than their rounded tip) move forward.
+  g.lowInFront = p.humpH > 0 && g.lowBottom - (g.y1 - p.humpH) > 0.25 * p.L;
+  g.lowLayout = g.lowInFront ? best(g.innerD - p.bins - p.humpD) : g.layout;
+  g.layoutOf = (i) => (i === lowest ? g.lowLayout : g.layout);
+  g.hanging = g.levels ? g.layout.n * (g.levels - 1) + g.lowLayout.n : 0;
+  // Rack: pieces lying lengthwise front-to-back, side by side.
+  g.rackCols = g.rackH ? fitCount(g.innerW, p.PW, p.gap) : 0;
+  g.rackRows = g.rackH ? Math.min(2, fitCount(g.innerD - p.bins, p.L, p.gap)) : 0;
+  g.rack = g.rackCols * g.rackRows;
+  g.count = g.hanging + g.rack;
+
+  g.meatL = (p.kg / 1.05) * g.count;
+  g.airL = g.freshL - g.meatL - 3;
+  const q = p.cfm * 1.699 * (p.duty / 100) * 0.5;  // m³/h, half lost to obstruction
+  g.flow = q;
+  g.ach = g.airL > 0 ? q / (g.airL / 1000) : 0;
+  return g;
+}
+
+function piecePath(kind, a, L) {
+  if (kind === "pierna" || kind === "custom") {
+    // rolled, netted leg: rounded bundle with a tied neck
+    return `M ${-a*.12} 0 L ${a*.12} 0 C ${a*.42} ${L*.04} ${a*.5} ${L*.2} ${a*.5} ${L*.5} ` +
+      `C ${a*.5} ${L*.85} ${a*.35} ${L} 0 ${L} C ${-a*.35} ${L} ${-a*.5} ${L*.85} ${-a*.5} ${L*.5} ` +
+      `C ${-a*.5} ${L*.2} ${-a*.42} ${L*.04} ${-a*.12} 0 Z`;
+  }
+  return `M ${-a*.12} 0 L ${a*.12} 0 C ${a*.2} ${L*.25} ${a*.5} ${L*.42} ${a*.5} ${L*.68} ` +
+    `C ${a*.5} ${L*.93} ${a*.22} ${L} 0 ${L} C ${-a*.3} ${L} ${-a*.5} ${L*.9} ${-a*.5} ${L*.66} ` +
+    `C ${-a*.5} ${L*.44} ${-a*.22} ${L*.25} ${-a*.12} 0 Z`;
+}
+
+function defs(svg) {
+  const d = el("defs", {}, svg);
+  const pat = el("pattern", { id: "hatch", width: 2, height: 2, patternUnits: "userSpaceOnUse", patternTransform: "rotate(45)" }, d);
+  el("line", { x1: 0, y1: 0, x2: 0, y2: 2, class: "v-dim", "stroke-width": .3 }, pat);
+  const m = el("marker", { id: "arr", viewBox: "0 0 10 10", refX: 6, refY: 5, markerWidth: 5, markerHeight: 5, orient: "auto-start-reverse" }, d);
+  el("path", { d: "M0 0 L10 5 L0 10 z", class: "v-arrow" }, m);
+  const md = el("marker", { id: "arrd", viewBox: "0 0 10 10", refX: 5, refY: 5, markerWidth: 4, markerHeight: 4, orient: "auto-start-reverse" }, d);
+  el("path", { d: "M0 0 L10 5 L0 10 z", class: "v-arrow-dim" }, md);
+}
+
+function dim(svg, x1, y1, x2, y2, label, offset = 0, vertical = false) {
+  const g = el("g", {}, svg);
+  el("line", { x1, y1, x2, y2, class: "v-dim", "stroke-width": .25, "marker-start": "url(#arrd)", "marker-end": "url(#arrd)" }, g);
+  if (vertical) {
+    const t = txt(g, x1 + offset, (y1 + y2) / 2, label, "v-text-2", 2, "middle");
+    t.setAttribute("transform", `rotate(-90 ${x1 + offset} ${(y1 + y2) / 2})`);
+  } else {
+    txt(g, (x1 + x2) / 2, y1 + offset, label, "v-text-2", 2, "middle");
+  }
+}
+
+function sensorDot(svg, x, y, label, right = true) {
+  el("circle", { cx: x, cy: y, r: 4, class: "v-sensor-zone", "stroke-width": .25 }, svg);
+  el("circle", { cx: x, cy: y, r: 1.4, class: "v-sensor", "stroke-width": .3 }, svg);
+  txt(svg, x + (right ? 2.4 : -2.4), y - 2, label, "v-text", 2.1, right ? "start" : "end");
+}
+
+function layers() {
+  return { hams: $("lyHams").checked, air: $("lyAir").checked, sensors: $("lySensors").checked,
+           gear: $("lyGear").checked, dims: $("lyDims").checked, now: $("lyNow").checked };
+}
+
+function frame(svg, w, p) {
+  svg.replaceChildren();
+  const m = 12;
+  svg.setAttribute("viewBox", `${-m} ${-m} ${w + 2 * m} ${p.H + 2 * m}`);
+  defs(svg);
+  for (let x = 0; x <= w; x += 10) el("line", { x1: x, y1: -m, x2: x, y2: p.H + m, class: "v-grid", "stroke-width": .15 }, svg);
+  for (let y = 0; y <= p.H; y += 10) el("line", { x1: -m, y1: y, x2: w + m, y2: y, class: "v-grid", "stroke-width": .15 }, svg);
+}
+
+function levelsToDraw(g) { return Math.max(1, g.levels); }
+
+function drawFront(p, g, ly) {
+  const svg = $("front");
+  frame(svg, p.W, p);
+  const L = p.sideWall, R = p.W - p.sideWall;
+  el("rect", { x: 0, y: 0, width: p.W, height: p.H, class: "v-shell", "stroke-width": .4 }, svg);
+  el("rect", { x: 0, y: p.H - p.base, width: p.W, height: p.base, class: "v-base", "stroke-width": .3 }, svg);
+  el("rect", { x: L, y: g.yFreezer, width: g.innerW, height: p.freezerH, class: "v-freezer", "stroke-width": .3 }, svg);
+  txt(svg, p.W / 2, g.yFreezer + p.freezerH / 2 + 1, "Congelador 41 L", "v-text-cold", 2.4, "middle");
+  el("rect", { x: L, y: g.y0, width: g.innerW, height: g.freshH, class: "v-fresh", "stroke-width": .3 }, svg);
+  if (p.cooling === "frost") {
+    el("rect", { x: L, y: g.y0, width: g.innerW, height: 1.2, class: "v-frost", "stroke-width": .15 }, svg);
+  }
+
+  if (ly.gear) {
+    el("rect", { x: R - 13, y: g.y1 - p.humpH - 11, width: 11, height: 10, class: "v-hum", "stroke-width": .35, "stroke-dasharray": "1 .6" }, svg);
+    txt(svg, R - 7.5, g.y1 - p.humpH - 12, "humid. (fondo)", "v-text-2", 1.5, "middle");
+  }
+  if (g.rackH) {
+    const yr = g.y0 + g.rackH - 1;
+    el("line", { x1: L, y1: yr, x2: R, y2: yr, class: "v-shelf", "stroke-width": .5, "stroke-dasharray": "1 .7" }, svg);
+    if (ly.hams) {
+      const groupW = g.rackCols * p.PW + (g.rackCols - 1) * p.gap;
+      for (let c = 0; c < g.rackCols; c++) {
+        const cx = L + (g.innerW - groupW) / 2 + p.PW / 2 + c * (p.PW + p.gap);
+        el("ellipse", { cx, cy: yr - p.PT / 2 - .3, rx: p.PW / 2, ry: p.PT / 2, class: "v-ham", "stroke-width": .4 }, svg);
+      }
+      txt(svg, L + 1, yr + 2.2, "rejilla: piezas acostadas", "v-text-2", 1.5);
+    }
+  }
+  const n = levelsToDraw(g);
+  for (let i = 0; i < n; i++) {
+    const yRod = g.rodY(i), lay = g.layoutOf(i), cols = Math.max(1, lay.cols);
+    if (p.shelves === "vidrio" && i > 0) {
+      el("line", { x1: L, y1: yRod - ROD + .2, x2: R, y2: yRod - ROD + .2, class: "v-shelf glass", "stroke-width": .9 }, svg);
+    } else if (p.shelves === "rejilla" && i > 0) {
+      el("line", { x1: L, y1: yRod - ROD + .2, x2: R, y2: yRod - ROD + .2, class: "v-shelf", "stroke-width": .5, "stroke-dasharray": "1 .7" }, svg);
+    }
+    if (!ly.hams) continue;
+    el("line", { x1: L + .5, y1: yRod, x2: R - .5, y2: yRod, class: "v-rod", "stroke-width": .7 }, svg);
+    const groupW = cols * lay.across + (cols - 1) * p.gap;
+    const start = L + (g.innerW - groupW) / 2 + lay.across / 2;
+    for (let c = 0; c < cols; c++) {
+      const cx = start + c * (lay.across + p.gap);
+      el("path", { d: `M ${cx} ${yRod} l ${-p.PW * .12} ${p.hook} M ${cx} ${yRod} l ${p.PW * .12} ${p.hook}`, class: "v-hook", "stroke-width": .3 }, svg);
+      const ok = g.fitsHeight && lay.n > 0;
+      el("path", { d: piecePath(p.piece, lay.across, p.L), transform: `translate(${cx} ${yRod + p.hook})`, class: "v-ham" + (ok ? "" : " over"), "stroke-width": .4 }, svg);
+    }
+  }
+  const lay = g.layout, cols = Math.max(1, lay.cols);
+  if (ly.hams && !g.fitsHeight) {
+    el("line", { x1: L, y1: g.y1 - TRAY, x2: R, y2: g.y1 - TRAY, class: "v-dim", "stroke-width": .3, "stroke-dasharray": "1 .6" }, svg);
+    txt(svg, p.W / 2, g.y1 - TRAY - 1.5, `sobra ${fmt(g.levelNeed - (g.freshH - TRAY), 1)} cm`, "v-text-warn", 2.2, "middle");
+  }
+
+  if (ly.gear) {
+    el("rect", { x: L + 1, y: g.y1 - TRAY + 1, width: g.innerW - 2, height: TRAY - 1.5, class: "v-tray", "stroke-width": .2 }, svg);
+    txt(svg, p.W / 2, g.y1 - 1.6, "cesta / bandeja de goteo", "v-text-2", 1.6, "middle");
+    el("rect", { x: R - 7, y: g.y0 + 2.5, width: 6.5, height: 10, class: "v-thermo", "stroke-width": .3 }, svg);
+    txt(svg, R - 3.7, g.y0 + 15.2, "termost.", "v-text-2", 1.5, "middle");
+    el("rect", { x: L + 1, y: g.y0 + 1.5, width: 4, height: 2.2, class: "v-cam", "stroke-width": .2 }, svg);
+    txt(svg, L + 6, g.y0 + 3.4, "cámara", "v-text-2", 1.6);
+    el("rect", { x: p.W / 2 - 4.6, y: g.y0 + 1.6, width: 9.2, height: 1.8, class: "v-fan", "stroke-width": .4 }, svg);
+    txt(svg, p.W / 2, g.y0 + 6.6, "ventilador", "v-text-2", 1.6, "middle");
+  }
+
+  if (ly.sensors) {
+    const top = g.rodY(0) + p.hook + p.L * 0.5;
+    const between = (g.innerW - (cols * lay.across + (cols - 1) * p.gap)) / 2;
+    sensorDot(svg, cols > 1 ? p.W / 2 : L + Math.max(3, between / 2), top, "S1");
+    // S2 in the gap between levels, S3 low at the front corner
+    const s2y = n > 1 ? g.rodY(Math.floor(n / 2)) - ROD - 2.4 : g.rodY(0) + p.hook + p.L * 0.8;
+    sensorDot(svg, p.W / 2 + 8, s2y, "S2");
+    sensorDot(svg, R - 2.6, g.y1 - TRAY - 3, "S3", false);
+  }
+
+  if (ly.now) {
+    for (const c of CURRENT) {
+      const y = g.y1 - c.h;
+      el("line", { x1: L, y1: y, x2: p.W + .6, y2: y, class: "v-dim", "stroke-width": .3, "stroke-dasharray": "1.2 .8" }, svg);
+      txt(svg, p.W + 1, y + .7, `${fmt(c.h, 1)}`, "v-text", 1.8);
+      txt(svg, p.W + 1, y + 2.7, c.label, "v-text-2", 1.4);
+    }
+    txt(svg, p.W + 1, g.y0 - 1.5, "hoy (cm", "v-text-2", 1.4);
+    txt(svg, p.W + 1, g.y0 + .3, "del suelo)", "v-text-2", 1.4);
+  }
+  if (ly.dims) {
+    dim(svg, 0, p.H + 6, p.W, p.H + 6, `${fmt(p.W, 1)}`, 4);
+    dim(svg, -9, 0, -9, p.H, `${fmt(p.H, 1)}`, -2, true);
+    dim(svg, -3.5, g.y0, -3.5, g.y1, `${fmt(g.freshH, 1)} útil`, -1.2, true);
+    dim(svg, L, g.y1 + 3.5, R, g.y1 + 3.5, `${fmt(g.innerW, 1)} interior`, -1.1);
+  }
+  $("capFront").textContent = `${fmt(p.W, 0)} × ${fmt(p.H, 0)} cm`;
+}
+
+function drawSide(p, g, ly) {
+  const svg = $("side");
+  frame(svg, p.D, p);
+  const F = p.doorT, B = p.D - p.backWall;
+  el("rect", { x: 0, y: 0, width: p.D, height: p.H, class: "v-shell", "stroke-width": .4 }, svg);
+  el("rect", { x: 0, y: p.H - p.base, width: p.D, height: p.base, class: "v-base", "stroke-width": .3 }, svg);
+  el("rect", { x: 0, y: g.y0 - 1, width: p.doorT, height: g.freshH + 2, class: "v-door", "stroke-width": .3 }, svg);
+  el("rect", { x: 0, y: g.yFreezer - 1, width: p.doorT, height: p.freezerH + 2, class: "v-door", "stroke-width": .3 }, svg);
+  txt(svg, p.doorT / 2, g.y0 + g.freshH / 2, "puerta", "v-text-2", 1.8, "middle").setAttribute("transform", `rotate(-90 ${p.doorT / 2} ${g.y0 + g.freshH / 2})`);
+  el("rect", { x: F, y: g.yFreezer, width: B - F, height: p.freezerH, class: "v-freezer", "stroke-width": .3 }, svg);
+  txt(svg, (F + B) / 2, g.yFreezer + p.freezerH / 2 + 1, "Congelador", "v-text-cold", 2.4, "middle");
+  el("rect", { x: F, y: g.y0, width: B - F, height: g.freshH, class: "v-fresh", "stroke-width": .3 }, svg);
+  if (p.bins > 0) {
+    el("rect", { x: F, y: g.y0 + 4, width: p.bins, height: g.freshH - 8, class: "v-bins", "stroke-width": .2 }, svg);
+    txt(svg, F + p.bins / 2, g.y0 + g.freshH - 6, "repisas", "v-text-2", 1.5, "middle");
+  }
+  if (p.humpD > 0 && p.humpH > 0) {
+    el("rect", { x: B - p.humpD, y: g.y1 - p.humpH, width: p.humpD, height: p.humpH, class: "v-hump", "stroke-width": .3 }, svg);
+    txt(svg, B - p.humpD / 2, g.y1 - 2, "compresor", "v-text-2", 1.5, "middle");
+  }
+  if (p.cooling === "frost") {
+    const plateH = g.freshH * 0.45;
+    el("rect", { x: B - 1.4, y: g.y0, width: 1.4, height: plateH, class: "v-frost", "stroke-width": .2 }, svg);
+    el("rect", { x: F + 2, y: g.y0, width: B - F - 2, height: 1.2, class: "v-frost", "stroke-width": .15 }, svg);
+    txt(svg, B + p.backWall / 2 + .6, g.y0 + plateH / 2, "placa fría", "v-text-cold", 1.6, "middle")
+      .setAttribute("transform", `rotate(-90 ${B + p.backWall / 2 + .6} ${g.y0 + plateH / 2})`);
+  } else {
+    el("path", { d: `M ${B - 1} ${g.y0 + 4} h -6`, class: "v-air-in", "stroke-width": .5, "marker-end": "url(#arr)" }, svg);
+    txt(svg, B - 2, g.y0 + 9.5, "entrada frío", "v-text-cold", 1.7, "end");
+  }
+
+  const n = levelsToDraw(g);
+  const front = F + p.bins, back = B;
+  if (g.rackH) {
+    const yr = g.y0 + g.rackH - 1;
+    el("line", { x1: front + .5, y1: yr, x2: back - .5, y2: yr, class: "v-shelf", "stroke-width": .5, "stroke-dasharray": "1 .7" }, svg);
+    if (ly.hams) {
+      const rows = Math.max(1, g.rackRows);
+      const groupD = rows * p.L + (rows - 1) * p.gap;
+      for (let r = 0; r < rows; r++) {
+        const cx = front + (back - front - groupD) / 2 + p.L / 2 + r * (p.L + p.gap);
+        el("ellipse", { cx, cy: yr - p.PT / 2 - .3, rx: p.L / 2, ry: p.PT / 2, class: "v-ham", "stroke-width": .4 }, svg);
+      }
+    }
+  }
+  for (let i = 0; i < n; i++) {
+    const yRod = g.rodY(i);
+    if (i > 0) {
+      const glass = p.shelves === "vidrio";
+      el("line", { x1: front + .5, y1: yRod - ROD + .2, x2: back - .5, y2: yRod - ROD + .2, class: "v-shelf" + (glass ? " glass" : ""), "stroke-width": glass ? .9 : .5, "stroke-dasharray": glass ? "none" : "1 .7" }, svg);
+    }
+    if (!ly.hams) continue;
+    const lay = g.layoutOf(i), rows = Math.max(1, lay.rows);
+    el("line", { x1: front + .5, y1: yRod, x2: back - .5, y2: yRod, class: "v-rod", "stroke-width": .7 }, svg);
+    const groupD = rows * lay.deep + (rows - 1) * p.gap;
+    const span = lay === g.lowLayout && g.lowInFront ? (back - p.humpD) - front : back - front;
+    const startX = front + (span - groupD) / 2 + lay.deep / 2;
+    for (let r = 0; r < rows; r++) {
+      const cx = startX + r * (lay.deep + p.gap);
+      el("line", { x1: cx, y1: yRod, x2: cx, y2: yRod + p.hook, class: "v-hook", "stroke-width": .3 }, svg);
+      const ok = g.fitsHeight && lay.n > 0;
+      el("path", { d: piecePath(p.piece, lay.deep, p.L), transform: `translate(${cx} ${yRod + p.hook})`, class: "v-ham" + (ok ? "" : " over"), "stroke-width": .4 }, svg);
+    }
+  }
+
+  if (ly.air) {
+    const xf = front + 2.2, xb = B - 3.2, yt = g.y0 + 4.5;
+    const yb = Math.min(g.y1 - TRAY - 1.5, g.y1 - p.humpH - 1.5);
+    if (p.shelves === "rejilla") {
+      const loop = `M ${xf} ${yb} L ${xf} ${yt + 3} Q ${xf} ${yt} ${xf + 3} ${yt} L ${xb - 3} ${yt} Q ${xb} ${yt} ${xb} ${yt + 3} ` +
+                   `L ${xb} ${yb - 3} Q ${xb} ${yb} ${xb - 3} ${yb} L ${xf + 3} ${yb}`;
+      el("path", { d: loop, class: "v-air flow", "stroke-width": .55, "marker-end": "url(#arr)" }, svg);
+      el("path", { d: `M ${(xf + xb) / 2 - 2} ${yt} h 4`, class: "v-air", "stroke-width": .55, "marker-end": "url(#arr)" }, svg);
+      el("path", { d: `M ${xb} ${(yt + yb) / 2 - 2} v 4`, class: "v-air", "stroke-width": .55, "marker-end": "url(#arr)" }, svg);
+      el("path", { d: `M ${xf} ${(yt + yb) / 2 + 2} v -4`, class: "v-air", "stroke-width": .55, "marker-end": "url(#arr)" }, svg);
+    } else {
+      for (let i = 0; i < n; i++) {
+        const cy = g.rodY(i) + g.levelH / 2 - ROD;
+        el("ellipse", { cx: (front + back) / 2, cy, rx: (back - front) / 2 - 3, ry: g.levelH / 2 - 4, class: "v-stagnant", "stroke-width": .35 }, svg);
+      }
+    }
+  }
+
+  if (ly.gear) {
+    el("rect", { x: front + .5, y: g.y0 + 1.4, width: 9.2, height: 2, class: "v-fan", "stroke-width": .4 }, svg);
+    txt(svg, front + 1, g.y0 + 6, "vent.", "v-text-2", 1.6);
+    if (p.humpH > 0) {
+      const hx = B - p.humpD + 1, hy = g.y1 - p.humpH - 10;
+      el("rect", { x: hx, y: hy, width: Math.max(8, p.humpD - 2), height: 10, class: "v-hum", "stroke-width": .35 }, svg);
+      el("path", { d: `M ${hx + 1} ${hy + 2} q -3 -2 -6 0 q -3 2 -6 0`, class: "v-mist", "stroke-width": .35 }, svg);
+      txt(svg, hx + 1, hy + 6, "humid.", "v-text-2", 1.6);
+    }
+    el("rect", { x: front + 1, y: g.y1 - TRAY + 1, width: (B - p.humpD) - front - 2, height: TRAY - 1.5, class: "v-tray", "stroke-width": .2 }, svg);
+  }
+
+  if (ly.sensors) {
+    const mid = (front + back) / 2;
+    sensorDot(svg, mid, g.rodY(0) + p.hook + p.L * 0.5, "S1");
+    const s2y = n > 1 ? g.rodY(Math.floor(n / 2)) - ROD - 2.4 : g.rodY(0) + p.hook + p.L * 0.8;
+    sensorDot(svg, mid - 6, s2y, "S2");
+    sensorDot(svg, front + 1.4, g.y1 - TRAY - 3, "S3");
+  }
+
+  if (ly.dims) {
+    dim(svg, 0, p.H + 6, p.D, p.H + 6, `${fmt(p.D, 1)}`, 4);
+    dim(svg, F, g.y1 + 3.5, B, g.y1 + 3.5, `${fmt(g.innerD, 1)} interior`, -1.1);
+    if (g.levels) dim(svg, p.D + 5, g.rodY(0) - ROD, p.D + 5, g.rodY(0) - ROD + g.levelH, `${fmt(g.levelH, 1)} por nivel`, 3.4, true);
+  }
+  $("capSide").textContent = (p.cooling === "frost" ? "placa fría" : "No Frost") + (p.shelves === "vidrio" ? " · aire atrapado" : "");
+}
+
+function results(p, g) {
+  const names = { pierna: ["pierna", "piernas", "la pierna"], paleta: ["paleta", "paletas", "la paleta"],
+                  jamon: ["jamón", "jamones", "el jamón"], custom: ["pieza", "piezas", "la pieza"] };
+  const [one, many, the] = names[p.piece] || names.custom;
+  const items = [
+    { k: "Volumen interior", v: `${fmt(g.totalL, 0)} <small>L · ${fmt(g.totalL / 28.317, 1)} ft³</small>`, n: `refrigerador ${fmt(g.freshL, 0)} L · congelador ${fmt(g.freezerL, 0)} L (ficha: 163 + 41)` },
+    { k: "Niveles de colgado", v: `${g.levels} <small>× ${fmt(g.levelH, 0)} cm</small>`, n: `cada nivel necesita ${fmt(g.levelNeed, 0)} cm (barra, cuerda, pieza)` + (g.rackH ? `; arriba sobran ${fmt(g.rackH, 0)} cm para una rejilla` : ""), cls: g.levels ? "good" : "bad" },
+    { k: "Capacidad con aire", v: `${g.count} <small>${g.count === 1 ? one : many}</small>`, n: g.levels ? `${g.hanging} colgadas (${g.layout.cols} × ${g.layout.rows} por nivel)` + (g.lowInFront && g.lowLayout.n !== g.layout.n ? `, abajo ${g.lowLayout.n}` : "") + (g.rack ? ` + ${g.rack} acostadas en rejilla` : "") + `, ${fmt(p.gap, 0)} cm de aire` : "no cabe ni un nivel", cls: g.count ? "good" : "bad" },
+    { k: "Carga", v: `${fmt(g.count * p.kg, 1)} <small>kg</small>`, n: `merma objetivo 33 %: ${fmt(g.count * p.kg * 0.33, 1)} kg de agua que sacar` },
+    { k: "Aire libre", v: `${fmt(Math.max(0, g.airL), 0)} <small>L</small>`, n: "descontando piezas, bandeja y equipos" },
+    { k: "Recambios por hora", v: p.shelves === "rejilla" ? `${fmt(g.ach, 0)} <small>/h</small>` : `— <small>bloqueado</small>`, n: p.shelves === "rejilla" ? `≈ ${fmt(g.flow, 1)} m³/h al ${fmt(p.duty, 0)} %` : "con repisas de vidrio el aire no circula entre niveles", cls: p.shelves === "rejilla" ? "" : "bad" },
+  ];
+  $("results").innerHTML = items.map((i) =>
+    `<div class="res ${i.cls || ""}"><span class="label">${i.k}</span><span class="v">${i.v}</span><span class="small muted">${i.n}</span></div>`).join("");
+
+  let html;
+  if (!g.fitsHeight) {
+    html = `<div class="callout"><b>Con estas medidas ${the} no cuelga en vertical.</b> Faltan ${fmt(g.levelNeed - (g.freshH - TRAY), 1)} cm. Acorta la cuerda o usa piezas más cortas.</div>`;
+  } else if (!g.count) {
+    html = `<div class="callout"><b>Cabe en altura pero no en planta.</b> Reduce la separación o quita las repisas de la puerta.</div>`;
+  } else {
+    const extra = p.bins > 0 && fitCount(g.innerD, g.layout.deep, p.gap) > g.layout.rows
+      ? " Quitando las repisas de la puerta cabe otra fila." : "";
+    html = `<div class="callout ok"><b>Caben ${g.count} ${g.count === 1 ? one : many}</b> con ${fmt(p.gap, 0)} cm de aire alrededor: ${g.hanging} colgadas en ${g.levels} ${g.levels === 1 ? "nivel" : "niveles"}` + (g.rack ? ` y ${g.rack} acostadas en la rejilla de arriba (voltearlas cada 2–3 días)` : "") + `.${extra}` +
+      (p.shelves === "vidrio" ? " <b>Con repisas de vidrio el aire no pasa de un nivel a otro:</b> cámbialas por rejillas." : "") + `</div>`;
+  }
+  // Compare layouts with the same pieces
+  const scen = [
+    ["Con repisas de puerta", geometry({ ...p, bins: p.bins })],
+    ["Sin repisas de puerta", geometry({ ...p, bins: 0 })],
+    ["Sin repisas y 2 cm de aire (mínimo)", geometry({ ...p, bins: 0, gap: 2 })],
+    ["Sin repisas y 5 cm de aire (holgado)", geometry({ ...p, bins: 0, gap: 5 })],
+  ];
+  geometry(p); // restore TRAY for the drawing
+  html += `<div class="tablewrap"><table><thead><tr><th>Escenario</th><th>Colgadas</th><th>Acostadas</th><th style="text-align:right">${many[0].toUpperCase() + many.slice(1)}</th></tr></thead><tbody>` +
+    scen.map(([name, s]) => `<tr><td>${name}</td><td class="num" style="text-align:left">${s.hanging}</td><td class="num" style="text-align:left">${s.rack}</td><td class="num">${s.count}</td></tr>`).join("") +
+    `</tbody></table></div><p class="small muted">Hoy hay unas 16 piezas contando las de la puerta, pero pegadas y sin aire entre niveles. Con ${fmt(p.gap, 0)} cm de separación caben menos, y se secan parejo.</p>`;
+  $("verdict").innerHTML = html;
+}
+
+function render() {
+  try { localStorage.setItem(STORE, JSON.stringify(P)); } catch (e) {}
+  const g = geometry(P), ly = layers();
+  drawFront(P, g, ly);
+  drawSide(P, g, ly);
+  results(P, g);
+}
+
+function syncInputs() {
+  for (const k of NUM_KEYS) $(k).value = P[k];
+  $("cooling").value = P.cooling;
+  $("piece").value = P.piece;
+  $("shelves").value = P.shelves;
+}
+
+for (const k of NUM_KEYS) {
+  $(k).addEventListener("input", (e) => {
+    const v = parseFloat(e.target.value);
+    if (!Number.isFinite(v)) return;
+    P[k] = v;
+    if (["L", "PW", "PT", "kg"].includes(k)) { P.piece = "custom"; $("piece").value = "custom"; }
+    render();
+  });
+}
+$("cooling").addEventListener("change", (e) => { P.cooling = e.target.value; render(); });
+$("shelves").addEventListener("change", (e) => { P.shelves = e.target.value; render(); });
+$("piece").addEventListener("change", (e) => {
+  P.piece = e.target.value;
+  if (PIECES[P.piece]) Object.assign(P, PIECES[P.piece]);
+  syncInputs(); render();
+});
+for (const id of ["lyHams", "lyAir", "lySensors", "lyGear", "lyDims", "lyNow"]) $(id).addEventListener("change", render);
+$("resetBtn").addEventListener("click", () => { P = { ...DEFAULTS }; syncInputs(); render(); });
+
+const BOM = [
+  ["Rejillas de acero inoxidable (en lugar de las repisas de vidrio)", "Que el aire circule entre niveles", 2, 12],
+  ["Barras y ganchos S inoxidables", "Niveles de colgado", 1, 15],
+  ["Raspberry Pi 4 (2 GB) + fuente + microSD 32 GB", "Servidor, panel, alarmas, Asterisk", 1, 70],
+  ["ESP32-CAM AI-Thinker + programador MB", "Control y timelapse", 1, 12],
+  ["SHT31-D (pack de 3, Teyleten)", "Temperatura y humedad", 1, 16],
+  ["Módulo relé 2 canales 5 V (30 A para la nevera)", "Nevera y humidificador", 1, 12],
+  ["Ventilador 92 mm 12 V", "Circulación de aire", 1, 8],
+  ["MOSFET AO3400 / IRLZ44N, 100 Ω, 10 kΩ, diodo 1N5819", "Control PWM del ventilador", 1, 3],
+  ["Fuente 5 V 3 A + condensador 1000 µF", "ESP32 y relés", 1, 9],
+  ["Fuente 12 V 1 A", "Ventilador", 1, 6],
+  ["Humidificador ultrasónico con interruptor mecánico", "Humedad", 1, 20],
+  ["Caja estanca, prensaestopas, cable plano, barniz protector", "Montaje", 1, 18],
+  ["Grandstream HT813 (FXO)", "Llamadas por línea analógica", 1, 80],
+  ["SAI / UPS 600 VA", "Respaldo en cortes de luz", 1, 60],
+];
+$("bom").innerHTML = BOM.map(([a, b, n, usd]) =>
+  `<tr><td>${a}</td><td class="muted">${b}</td><td class="num">${n}</td><td class="num">${n * usd}</td></tr>`).join("");
+$("bomTotal").textContent = `≈ ${BOM.reduce((s, r) => s + r[2] * r[3], 0)}`;
+
+syncInputs();
+render();
+</script>
