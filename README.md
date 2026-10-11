@@ -8,14 +8,18 @@ circulación de aire** constantes, sigue un **programa de curado por fases** y g
   ventilador y hace las fotos. Funciona **sola** aunque se caiga la Raspberry o el WiFi; guarda las
   últimas consignas en su memoria.
 - **Raspberry Pi**: servidor con panel web, histórico, programas de curado, seguimiento de la merma
-  de cada pieza, fotos, generación de timelapse y avisos al móvil.
+  de cada pieza, fotos, generación de timelapse y **alarmas** (correo, Telegram, WhatsApp, SMS,
+  webhooks y **llamada telefónica** por línea analógica con Asterisk). Ver
+  [`docs/alarmas.md`](docs/alarmas.md).
 
 ```
 firmware/esp32cam/   firmware PlatformIO (Arduino) para la ESP32-CAM
 server/              servidor FastAPI + panel web para la Raspberry Pi
 server/programs/     programas de curado (JSON, editables)
 deploy/              servicio systemd e instalador para la Pi
+deploy/asterisk/     configuración de Asterisk para las llamadas de alarma
 docs/cableado.md     conexiones, montaje y calibración
+docs/alarmas.md      alarmas, canales de aviso, línea analógica (HT813) y cortes de luz
 ```
 
 ## Material
@@ -40,9 +44,10 @@ sudo ./deploy/install.sh
 ```
 
 Instala el servicio `curado`, crea `/etc/curado.env` con un **token aleatorio** (lo muestra al
-final) y deja el panel en `http://<ip-de-la-pi>:8000`. Para recibir avisos en el móvil instala la
-app **ntfy**, suscríbete a un tema y ponlo en `CURADO_ALERT_URL` dentro de `/etc/curado.env`
-(`sudo systemctl restart curado`).
+final) y deja el panel en `http://<ip-de-la-pi>:8000`. Configura los avisos (correo, Telegram,
+WhatsApp…) rellenando sus credenciales en `/etc/curado.env` y, para llamadas por la línea
+analógica, ejecuta también `sudo ./deploy/install-asterisk.sh`. Todo en
+[`docs/alarmas.md`](docs/alarmas.md).
 
 Conviene dar a la Pi una IP fija (en el router) porque la ESP32 la necesita.
 
@@ -81,8 +86,20 @@ Cada 5 s la ESP32 hace la media de los sensores válidos y decide:
 
 Protecciones: el compresor espera 5 min entre arranques (también al volver la luz) y funciona al
 menos 2 min; nunca enfría por debajo de `min_temp_c`; si fallan **todos** los sensores apaga nevera
-y humidificador y deja sólo el ventilador. La ESP32 envía alarmas (temperatura/humedad fuera de
-rango, sensores caídos) y la Pi avisa también si la ESP32 deja de reportar 10 min.
+y humidificador y deja sólo el ventilador.
+
+## Alarmas
+
+La Pi vigila cada minuto y avisa por **todos los canales configurados**:
+
+- **Temperatura > 7 °C** durante 10 min → mensajes **y llamada telefónica**, repetidos cada
+  15 min hasta que alguien confirma (botón en el panel o pulsando 1 en la llamada).
+- **La nevera no enfría**: relé 45 min encendido sin que baje la temperatura. Detecta una nevera
+  apagada o averiada **antes** de llegar a 7 °C.
+- **Sin datos de la ESP32** (corte de luz o WiFi), **temperatura < 0 °C** y **sensores caídos**.
+
+Detalles, la pasarela para la línea analógica (**Grandstream HT813**) y cómo cubrir los cortes de
+luz (SAI + vigilancia externa) en [`docs/alarmas.md`](docs/alarmas.md).
 
 En el panel, *Últimas 24 h* muestra el % de tiempo que funcionan nevera y humidificador: una nevera
 al 90 % indica mala junta o demasiado calor exterior; un humidificador constante es normal en
@@ -134,6 +151,9 @@ vídeo MP4 de los últimos N días con ffmpeg. A 15 min/foto, un mes son ~2900 f
 | GET | `/api/programs` | programas disponibles |
 | GET/POST | `/api/hams`, `/api/hams/{id}/weights` | piezas y pesadas |
 | GET/POST | `/api/timelapse` | vídeos y generación |
+| GET | `/api/alarm` | alarmas abiertas, reglas y canales |
+| POST | `/api/alarm/ack?by=…` | confirmar alarma (también lo llama Asterisk) |
+| POST | `/api/alarm/test` | probar canales (`{"call": true}` incluye llamada) |
 
 El panel no tiene contraseña: úsalo sólo en tu red local (o detrás de una VPN como Tailscale).
 

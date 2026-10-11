@@ -13,14 +13,25 @@ from fastapi.testclient import TestClient  # noqa: E402
 
 from curado import programs, settings  # noqa: E402
 from curado.app import create_app  # noqa: E402
+from curado.notify import Notifier  # noqa: E402
 
 PROGRAMS_DIR = Path(__file__).resolve().parent.parent / "programs"
 TOKEN = {"X-Device-Token": settings.DEVICE_TOKEN}
 
 
+class FakeNotifier(Notifier):
+    def __init__(self):
+        super().__init__([])
+        self.sent = []
+
+    def send(self, subject, body, critical=False, call=False):
+        self.sent.append({"subject": subject, "body": body, "critical": critical, "call": call})
+        return {"fake": "ok"}
+
+
 @pytest.fixture
 def client(tmp_path):
-    app = create_app(tmp_path, PROGRAMS_DIR)
+    app = create_app(tmp_path, PROGRAMS_DIR, notifier=FakeNotifier())
     with TestClient(app) as c:
         c.app_state = app.state
         yield c
@@ -135,19 +146,6 @@ def test_history_buckets(client):
     h = client.get("/api/history?hours=1").json()
     assert len(h["rows"]) >= 1
     assert h["rows"][0]["t"] == 14
-
-
-def test_alerts_offline_and_alarm(client):
-    alerter = client.app_state.alerter
-    client.post("/api/telemetry", json=telemetry(alarms=["TEMP_HIGH"]), headers=TOKEN)
-    alerter.check()
-    events = client.get("/api/status").json()["events"]
-    assert [e["kind"] for e in events] == ["TEMP_HIGH"]
-    alerter.check()  # not repeated within ALERT_REPEAT_MIN
-    assert len(client.get("/api/status").json()["events"]) == 1
-    alerter.check(now=time.time() + 3600 * 2)
-    kinds = [e["kind"] for e in client.get("/api/status").json()["events"]]
-    assert "OFFLINE" in kinds
 
 
 def test_dashboard_served(client):

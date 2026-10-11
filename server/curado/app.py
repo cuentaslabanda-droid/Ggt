@@ -5,6 +5,7 @@ Run:  uvicorn curado.app:app --host 0.0.0.0 --port 8000
 
 import json
 import logging
+import os
 import time
 import zlib
 from contextlib import asynccontextmanager
@@ -19,8 +20,9 @@ from pydantic import BaseModel, Field, model_validator
 
 from . import programs as programs_mod
 from . import settings
-from .alerts import Alerter
+from .alerts import AlarmSettings, Alerter
 from .db import Database
+from .notify import Notifier, build_channels, spoken, synthesize
 from .timelapse import TimelapseBuilder
 
 log = logging.getLogger("curado")
@@ -79,6 +81,7 @@ class Settings(BaseModel):
     program: str | None = None
     program_start: date | None = None
     setpoints: Setpoints = Field(default_factory=Setpoints)
+    alarms: AlarmSettings = Field(default_factory=AlarmSettings)
 
 
 class HamIn(BaseModel):
@@ -93,22 +96,30 @@ class WeightIn(BaseModel):
     ts: int | None = None
 
 
+class AlarmTestIn(BaseModel):
+    call: bool = False
+
+
 class TimelapseIn(BaseModel):
     days: float = Field(7, gt=0, le=3650)
     fps: int = Field(24, ge=1, le=60)
     width: int = Field(1280, ge=320, le=1920)
 
 
-def create_app(data_dir: Path | None = None, programs_dir: Path | None = None) -> FastAPI:
+def create_app(data_dir: Path | None = None, programs_dir: Path | None = None,
+               notifier: Notifier | None = None) -> FastAPI:
     data_dir = Path(data_dir or settings.DATA_DIR)
     photos_dir = data_dir / "photos"
     videos_dir = data_dir / "timelapse"
+    sounds_dir = data_dir / "sounds"  # voice messages Asterisk plays
     photos_dir.mkdir(parents=True, exist_ok=True)
     videos_dir.mkdir(parents=True, exist_ok=True)
+    sounds_dir.mkdir(parents=True, exist_ok=True)
 
     db = Database(data_dir / "curado.db")
     programs = programs_mod.load_programs(Path(programs_dir or settings.PROGRAMS_DIR))
-    alerter = Alerter(db)
+    notifier = notifier or Notifier(build_channels(os.environ, sounds_dir))
+    alerter = Alerter(db, notifier, lambda: load_settings().alarms)
     timelapse = TimelapseBuilder(db, photos_dir, videos_dir)
 
     @asynccontextmanager
@@ -259,6 +270,7 @@ def create_app(data_dir: Path | None = None, programs_dir: Path | None = None) -
                 "samples": duty["n"],
             },
             "latest_photo": photo_row,
+            "incidents": alerter.open_incidents(),
             "events": db.query("SELECT ts, kind, message FROM events ORDER BY ts DESC LIMIT 10"),
         }
 
@@ -302,6 +314,47 @@ def create_app(data_dir: Path | None = None, programs_dir: Path | None = None) -
         return {
             key: {**p, "total_days": programs_mod.total_days(p)} for key, p in programs.items()
         }
+
+    # --- Alarms -------------------------------------------------------------------
+
+    @app.get("/api/alarm")
+    def alarm_status():
+        return {
+            "settings": load_settings().alarms,
+            "incidents": alerter.open_incidents(),
+            "channels": notifier.describe(),
+            "heartbeat": bool(settings.HEARTBEAT_URL),
+        }
+
+    @app.post("/api/alarm/ack")
+    def alarm_ack(by: str = "panel"):
+        # The Asterisk dialplan calls this when someone presses 1.
+        return {"acknowledged": alerter.ack(by[:40])}
+
+    @app.post("/api/alarm/test")
+    def alarm_test(req: AlarmTestIn):
+        return {"results": alerter.test(req.call)}
+
+    @app.post("/api/voice/status")
+    def voice_status():
+        """Writes sounds/estado.wav, read to whoever calls the analog line."""
+        last = db.query_one("SELECT * FROM readings ORDER BY ts DESC LIMIT 1")
+        if last is None or last["t"] is None:
+            text = "No hay datos de temperatura de la cámara de curado."
+        else:
+            text = (f"Cámara de curado. Temperatura {last['t']:.1f} °C, humedad "
+                    f"{last['rh'] or 0:.0f} %. La nevera está "
+                    f"{'encendida' if last['compressor'] else 'apagada'}.")
+            mins = (time.time() - last["ts"]) / 60
+            if mins > 5:
+                text += f" Atención: el último dato es de hace {mins:.0f} minutos."
+        n = len(alerter.open_incidents())
+        text += f" Hay {n} alarmas activas." if n else " No hay alarmas activas."
+        try:
+            synthesize(spoken(text), sounds_dir / "estado")
+        except Exception as e:
+            raise HTTPException(503, f"no se pudo generar el audio: {e}")
+        return {"text": text}
 
     # --- Hams and weight loss -------------------------------------------------
 

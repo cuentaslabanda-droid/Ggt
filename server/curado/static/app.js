@@ -77,10 +77,38 @@ async function refreshStatus() {
     }
   }
 
+  renderIncidents(s.incidents || []);
+
   $("#events").innerHTML = s.events.length
     ? s.events.map((e) => `<li>${fmtTime(e.ts)} <span class="kind">${esc(e.kind)}</span> ${esc(e.message)}</li>`).join("")
     : "<li class='muted'>Sin avisos</li>";
 }
+
+const INCIDENT_NAMES = {
+  TEMP_MAX: "Temperatura alta",
+  TEMP_MIN: "Temperatura baja",
+  COOLING_FAIL: "La nevera no enfría",
+  OFFLINE: "Sin datos de la ESP32",
+  SENSOR_FAIL: "Sensores caídos",
+};
+
+function renderIncidents(incidents) {
+  const critical = incidents.filter((i) => i.critical);
+  const banner = $("#alarm-banner");
+  banner.hidden = critical.length === 0;
+  if (!critical.length) return;
+  const pending = critical.filter((i) => !i.acked_ts);
+  banner.classList.toggle("acked", pending.length === 0);
+  $("#alarm-text").textContent =
+    critical.map((i) => `${INCIDENT_NAMES[i.kind] || i.kind}: ${i.message}`).join(" · ") +
+    (pending.length ? "" : " (confirmada, esperando a que se resuelva)");
+  $("#ack-btn").hidden = pending.length === 0;
+}
+
+$("#ack-btn").addEventListener("click", async () => {
+  await api("/api/alarm/ack?by=panel", { method: "POST" });
+  refreshStatus();
+});
 
 // --- Charts ---------------------------------------------------------------
 
@@ -300,7 +328,9 @@ $("#settings").addEventListener("submit", async (e) => {
     t: Number(form.querySelector(`[data-off="${i}"][data-k=t]`).value),
     rh: Number(form.querySelector(`[data-off="${i}"][data-k=rh]`).value),
   }));
+  const current = await api("/api/settings");
   const body = {
+    ...current,
     mode: form.querySelector("input[name=mode]:checked").value,
     program: form.program.value || null,
     program_start: form.program_start.value || null,
@@ -323,11 +353,57 @@ $("#range").addEventListener("click", (e) => {
   refreshHistory();
 });
 
+// --- Alarms ---------------------------------------------------------------------------
+
+async function loadAlarms() {
+  const a = await api("/api/alarm");
+  for (const el of $("#alarm-form").querySelectorAll("[data-al]")) {
+    const v = a.settings[el.dataset.al];
+    if (el.type === "checkbox") el.checked = v;
+    else el.value = v;
+  }
+  const kind = { message: "mensajes", call: "llamadas en alarma crítica" };
+  $("#channels").innerHTML =
+    a.channels.map((c) => `<li>${esc(c.name)} <span class="muted">(${kind[c.kind]})</span></li>`).join("") +
+    (a.heartbeat ? "<li>vigilancia externa (heartbeat) <span class='muted'>(avisa si la Pi se apaga)</span></li>" : "") ||
+    "<li class='muted'>Ningún canal configurado: añade credenciales en /etc/curado.env</li>";
+}
+
+$("#alarm-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const alarms = {};
+  for (const el of e.target.querySelectorAll("[data-al]")) {
+    alarms[el.dataset.al] = el.type === "checkbox" ? el.checked : Number(el.value);
+  }
+  try {
+    const current = await api("/api/settings");
+    await api("/api/settings", { method: "PUT", body: { ...current, alarms } });
+    $("#alarm-msg").textContent = "Guardado.";
+  } catch (err) {
+    $("#alarm-msg").textContent = `Error: ${err.message}`;
+  }
+});
+
+async function testAlarm(call) {
+  $("#test-result").textContent = "Enviando…";
+  try {
+    const { results } = await api("/api/alarm/test", { method: "POST", body: { call } });
+    const entries = Object.entries(results);
+    $("#test-result").innerHTML = entries.length
+      ? entries.map(([k, v]) => `${esc(k)}: ${esc(v)}`).join("<br>")
+      : "No hay canales configurados.";
+  } catch (err) {
+    $("#test-result").textContent = `Error: ${err.message}`;
+  }
+}
+$("#test-msg").addEventListener("click", () => testAlarm(false));
+$("#test-call").addEventListener("click", () => testAlarm(true));
+
 // --- Boot -------------------------------------------------------------------------
 
 async function boot() {
   await refreshStatus().catch(console.error);
-  await Promise.all([loadSettings(), refreshHistory(), refreshPhotos(), refreshHams(), refreshTimelapse()]).catch(
+  await Promise.all([loadSettings(), loadAlarms(), refreshHistory(), refreshPhotos(), refreshHams(), refreshTimelapse()]).catch(
     console.error
   );
   setInterval(() => refreshStatus().catch(console.error), 15000);

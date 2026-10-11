@@ -15,6 +15,11 @@
     <span id="phase" class="muted"></span>
   </header>
 
+  <div id="alarm-banner" class="banner" hidden>
+    <div><strong>🚨 ALARMA</strong> <span id="alarm-text"></span></div>
+    <button id="ack-btn" type="button">Reconocer alarma</button>
+  </div>
+
   <main>
     <section class="cards">
       <div class="card big">
@@ -144,6 +149,33 @@
           <span id="save-msg" class="small"></span>
         </div>
       </form>
+    </section>
+
+    <section class="panel">
+      <h2>Alarmas</h2>
+      <form id="alarm-form" class="settings">
+        <fieldset>
+          <legend>Reglas</legend>
+          <label class="check"><input data-al="enabled" type="checkbox"> Alarmas activadas</label>
+          <label>Temperatura máxima (°C) <input data-al="temp_max" type="number" step="0.5"></label>
+          <label>Temperatura mínima (°C) <input data-al="temp_min" type="number" step="0.5"></label>
+          <label title="Evita falsas alarmas al abrir la puerta">Durante al menos (min) <input data-al="delay_min" type="number" min="0"></label>
+          <label title="Avisa si el compresor está encendido este tiempo y la temperatura no baja. 0 = desactivado">Nevera encendida sin enfriar (min) <input data-al="cooling_fail_min" type="number" min="0"></label>
+          <label>Repetir hasta confirmar cada (min) <input data-al="repeat_min" type="number" min="2"></label>
+          <label class="check"><input data-al="call_on_critical" type="checkbox"> Llamar por teléfono en alarmas críticas</label>
+        </fieldset>
+        <div class="row">
+          <button type="submit">Guardar alarmas</button>
+          <span id="alarm-msg" class="small"></span>
+        </div>
+      </form>
+      <h3 class="small">Canales configurados</h3>
+      <ul id="channels" class="small"></ul>
+      <div class="row">
+        <button type="button" id="test-msg">Enviar mensaje de prueba</button>
+        <button type="button" id="test-call" class="secondary">Prueba con llamada</button>
+      </div>
+      <div id="test-result" class="small muted"></div>
     </section>
 
     <section class="panel">

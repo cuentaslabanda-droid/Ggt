@@ -49,6 +49,20 @@ CREATE TABLE IF NOT EXISTS weights (
     weight_g REAL NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS incidents (
+    id INTEGER PRIMARY KEY,
+    kind TEXT NOT NULL,
+    critical INTEGER NOT NULL,
+    started_ts INTEGER NOT NULL,
+    last_notified_ts INTEGER NOT NULL,
+    notify_count INTEGER NOT NULL DEFAULT 0,
+    acked_ts INTEGER,
+    acked_by TEXT,
+    resolved_ts INTEGER,
+    message TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS incidents_open ON incidents (resolved_ts);
+
 CREATE TABLE IF NOT EXISTS events (
     id INTEGER PRIMARY KEY,
     ts INTEGER NOT NULL,

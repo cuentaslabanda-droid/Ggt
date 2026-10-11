@@ -87,3 +87,12 @@ details summary { cursor: pointer; margin: 8px 0; color: var(--accent); }
 .ham form { display: flex; gap: 6px; margin-top: 4px; }
 #events li .kind { font-weight: 600; }
 a { color: var(--accent); }
+.banner {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+  padding: 12px 16px; background: var(--warn); color: #fff;
+}
+.banner[hidden] { display: none; }
+.banner button { background: #fff; color: var(--warn); border-color: #fff; font-weight: 600; }
+.banner.acked { background: var(--muted); }
+button.secondary { background: transparent; color: var(--accent); }
+h3 { margin: 12px 0 4px; }
