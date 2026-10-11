@@ -52,7 +52,7 @@ def test_telemetry_returns_config_and_is_stored(client):
     r = client.post("/api/telemetry", json=telemetry(compressor=True), headers=TOKEN)
     assert r.status_code == 200
     body = r.json()
-    assert body["config"]["temp_c"] == 14
+    assert body["config"]["temp_c"] == 4
     assert body["version"] > 0
 
     status = client.get("/api/status").json()
@@ -154,3 +154,9 @@ def test_dashboard_served(client):
     r = client.get("/")
     assert r.status_code == 200
     assert "Cámara de curado" in r.text
+
+
+def test_cold_program_holds_4c():
+    program = programs.load_programs(PROGRAMS_DIR)["jamon_4c"]
+    for day in (0, 30, 80, 200, 1000):
+        assert programs.evaluate(program, day).setpoints["temp_c"] == 4

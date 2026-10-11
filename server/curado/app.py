@@ -38,7 +38,7 @@ class Offset(BaseModel):
 class Setpoints(BaseModel):
     """Everything the ESP32 receives. Field names match the firmware."""
 
-    temp_c: float = Field(14, ge=0, le=30)
+    temp_c: float = Field(4, ge=0, le=30)
     temp_hyst: float = Field(0.5, ge=0.1, le=5)
     rh: float = Field(75, ge=40, le=95)
     rh_hyst: float = Field(3, ge=0.5, le=15)

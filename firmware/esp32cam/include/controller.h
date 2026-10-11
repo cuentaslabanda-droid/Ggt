@@ -9,7 +9,7 @@ enum class OutputMode : uint8_t { Auto = 0, On = 1, Off = 2 };
 struct ControlConfig {
   // Temperature: compressor starts above temp_c + temp_hyst, stops below
   // temp_c - temp_hyst.
-  float temp_c = 14.0f;
+  float temp_c = 4.0f;
   float temp_hyst = 0.5f;
 
   // Humidity: humidifier starts below rh - rh_hyst and stops at rh.

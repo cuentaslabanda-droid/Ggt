@@ -92,24 +92,30 @@ neveras **no-frost**, que secan mucho el aire.
 
 En modo **Programa**, la temperatura, humedad y ventilador base siguen las fases del programa
 elegido desde la fecha de inicio, con transiciones graduales (`ramp_days`) para que la pieza no
-forme costra. Programa incluido para jamón serrano casero:
+forme costra. El programa principal, **Jamón curado en frío (`jamon_4c`)**, mantiene **4 °C** de
+principio a fin:
 
 | Fase | Días | °C | % HR |
 |------|------|----|------|
-| Salado (≈1 día por kg) | 10 | 3 | 88 |
-| Post-salado / asentamiento | 45 | 4 | 82 |
-| Secado | 60 | 4 → 12 | 82 → 76 |
-| Secado final | 60 | 12 → 15 | 76 → 72 |
-| Maduración (bodega) | 180 | 15 → 17 | 72 → 70 |
+| Salado (≈1 día por kg) | 10 | 4 | 88 |
+| Post-salado / asentamiento | 60 | 4 | 84 |
+| Secado | 150 | 4 | 84 → 80 |
+| Secado final y afinado | 240 | 4 | 80 → 76 |
+
+A 4 °C el agua sale más despacio que en una bodega a 12-17 °C, así que el curado es más largo
+(fácilmente 12-16 meses para un jamón entero). Da la pieza por terminada **por la merma**, no por
+los días: la última fase se mantiene indefinidamente. También tiene ventajas: es más seguro frente
+a bacterias y la nevera trabaja cómoda (no necesita calefacción en invierno).
+
+También se incluyen `jamon_serrano` y `paleta`, el método tradicional que sube a 12-17 °C para el
+secado y la maduración (más rápido y con más sabor "de bodega", pero la habitación tiene que estar
+por encima de esa temperatura porque la nevera sólo enfría).
 
 Edita o añade programas en `server/programs/*.json` (reinicia el servicio para cargarlos).
 Entre salado y post-salado hay que sacar, lavar y secar la pieza: el sistema no lo hace por ti.
 
 **Merma:** registra el peso inicial de cada pieza y pésala cada semana o dos. El jamón suele estar
 listo hacia el **30-35 % de pérdida de peso**; el panel muestra el progreso hasta el objetivo.
-
-> La nevera sólo enfría: las fases a 15-17 °C necesitan que la habitación esté por encima de esa
-> temperatura. En un garaje frío haría falta añadir una resistencia calefactora.
 
 ## Timelapse
 

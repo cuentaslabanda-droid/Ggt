@@ -30,8 +30,8 @@ def main():
     ap.add_argument("--photo", help="JPEG to upload as timelapse frame on every report")
     args = ap.parse_args()
 
-    t, rh = 16.0, 70.0
-    cfg = {"temp_c": 14, "rh": 75, "fan_duty": 30}
+    t, rh = 6.0, 75.0
+    cfg = {"temp_c": 4, "rh": 80, "fan_duty": 30}
     version = 0
     comp = hum = False
     step = 0
