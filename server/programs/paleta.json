@@ -1,0 +1,10 @@
+{
+  "name": "Paleta (casera)",
+  "description": "Paleta de 4-7 kg. Salado ~1 día por kg; ciclo total más corto que el jamón.",
+  "phases": [
+    {"name": "Salado", "days": 6, "temp_c": 3, "rh": 88, "fan_duty": 15},
+    {"name": "Post-salado / asentamiento", "days": 35, "temp_c": 4, "rh": 82, "fan_duty": 25},
+    {"name": "Secado", "days": 50, "temp_c": 12, "rh": 76, "fan_duty": 35, "ramp_days": 14},
+    {"name": "Maduración (bodega)", "days": 120, "temp_c": 16, "rh": 72, "fan_duty": 25, "ramp_days": 14}
+  ]
+}

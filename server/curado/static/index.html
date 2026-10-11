@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cámara de curado</title>
+  <link rel="icon" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Cámara de curado</h1>
+    <span id="online" class="pill">…</span>
+    <span id="phase" class="muted"></span>
+  </header>
+
+  <main>
+    <section class="cards">
+      <div class="card big">
+        <div class="label">Temperatura</div>
+        <div class="value"><span id="t">–</span> °C</div>
+        <div class="muted">consigna <span id="t-set">–</span> °C</div>
+      </div>
+      <div class="card big">
+        <div class="label">Humedad relativa</div>
+        <div class="value"><span id="rh">–</span> %</div>
+        <div class="muted">consigna <span id="rh-set">–</span> %</div>
+      </div>
+      <div class="card">
+        <div class="label">Salidas</div>
+        <div class="outputs">
+          <span id="out-comp" class="pill">Nevera</span>
+          <span id="out-hum" class="pill">Humidificador</span>
+          <span id="out-fan" class="pill">Ventilador</span>
+        </div>
+        <div class="muted small" id="duty"></div>
+      </div>
+      <div class="card">
+        <div class="label">Sensores</div>
+        <table id="sensors" class="small"></table>
+        <div class="muted small" id="device"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Histórico</h2>
+        <div class="seg" id="range">
+          <button data-h="6">6 h</button>
+          <button data-h="24" class="on">24 h</button>
+          <button data-h="168">7 d</button>
+          <button data-h="720">30 d</button>
+          <button data-h="4320">6 m</button>
+        </div>
+      </div>
+      <div class="chart"><canvas id="chart-t"></canvas></div>
+      <div class="chart"><canvas id="chart-rh"></canvas></div>
+      <div class="chart short"><canvas id="chart-out"></canvas></div>
+    </section>
+
+    <section class="grid2">
+      <div class="panel">
+        <h2>Cámara</h2>
+        <a id="photo-link" target="_blank"><img id="photo" alt="Sin fotos todavía"></a>
+        <div class="muted small" id="photo-ts"></div>
+        <div id="strip" class="strip"></div>
+        <form id="tl-form" class="row">
+          <label>Últimos <input name="days" type="number" value="7" min="1" step="1"> días</label>
+          <label><input name="fps" type="number" value="24" min="1" max="60"> fps</label>
+          <button>Generar timelapse</button>
+        </form>
+        <div id="tl-status" class="muted small"></div>
+        <ul id="videos" class="small"></ul>
+      </div>
+
+      <div class="panel">
+        <h2>Jamones y merma</h2>
+        <div id="hams"></div>
+        <details>
+          <summary>Añadir pieza</summary>
+          <form id="ham-form" class="stack">
+            <label>Nombre <input name="name" required placeholder="Jamón 1"></label>
+            <label>Peso inicial (g) <input name="initial_weight_g" type="number" required min="1"></label>
+            <label>Merma objetivo (%) <input name="target_loss_pct" type="number" value="33" step="0.5"></label>
+            <button>Añadir</button>
+          </form>
+        </details>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Consignas</h2>
+      <form id="settings" class="settings">
+        <fieldset>
+          <legend>Modo</legend>
+          <label><input type="radio" name="mode" value="manual"> Manual</label>
+          <label><input type="radio" name="mode" value="program"> Programa de curado</label>
+          <label>Programa <select name="program" id="program-select"></select></label>
+          <label>Inicio <input type="date" name="program_start"></label>
+          <div id="program-phases" class="small muted"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Clima <span class="muted small" id="manual-note"></span></legend>
+          <label>Temperatura (°C) <input data-sp="temp_c" type="number" step="0.1"></label>
+          <label>Humedad (%) <input data-sp="rh" type="number" step="0.5"></label>
+          <label>Ventilador base (%) <input data-sp="fan_duty" type="number" min="0" max="100"></label>
+          <label>Ventilador refuerzo (%) <input data-sp="fan_boost_duty" type="number" min="0" max="100"></label>
+          <label>Foto cada (s, 0 = no) <input data-sp="photo_interval" type="number" min="0" step="60"></label>
+          <label class="check"><input data-sp="flash" type="checkbox"> Flash en las fotos</label>
+        </fieldset>
+
+        <details>
+          <summary>Ajustes avanzados</summary>
+          <fieldset>
+            <legend>Control</legend>
+            <label>Histéresis temp. (°C) <input data-sp="temp_hyst" type="number" step="0.1"></label>
+            <label>Histéresis HR (%) <input data-sp="rh_hyst" type="number" step="0.5"></label>
+            <label title="Cuánto puede bajar la temperatura por debajo de la consigna para secar el aire con la nevera">Margen deshumidificar (°C) <input data-sp="dehum_margin" type="number" step="0.1"></label>
+            <label>Temp. mínima absoluta (°C) <input data-sp="min_temp_c" type="number" step="0.1"></label>
+            <label>Diferencia T entre sensores para reforzar ventilador <input data-sp="spread_t" type="number" step="0.1"></label>
+            <label>Diferencia HR entre sensores <input data-sp="spread_rh" type="number" step="0.5"></label>
+            <label>Compresor: mínimo encendido (s) <input data-sp="comp_min_on" type="number"></label>
+            <label>Compresor: mínimo apagado (s) <input data-sp="comp_min_off" type="number"></label>
+            <label>Humidificador: mínimo encendido (s) <input data-sp="hum_min_on" type="number"></label>
+            <label>Humidificador: mínimo apagado (s) <input data-sp="hum_min_off" type="number"></label>
+            <label>Humidificador: ráfaga máxima (s) <input data-sp="hum_max_on" type="number"></label>
+          </fieldset>
+          <fieldset>
+            <legend>Forzar salidas (pruebas)</legend>
+            <label>Nevera <select data-sp="comp_mode"><option>auto</option><option>on</option><option>off</option></select></label>
+            <label>Humidificador <select data-sp="hum_mode"><option>auto</option><option>on</option><option>off</option></select></label>
+            <label>Ventilador <select data-sp="fan_mode"><option>auto</option><option>on</option><option>off</option></select></label>
+            <label>Ventilador manual (%) <input data-sp="fan_manual" type="number" min="0" max="100"></label>
+          </fieldset>
+          <fieldset>
+            <legend>Calibración (corrección por sensor)</legend>
+            <div id="offsets"></div>
+          </fieldset>
+        </details>
+        <div class="row">
+          <button type="submit">Guardar</button>
+          <span id="save-msg" class="small"></span>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Avisos</h2>
+      <ul id="events" class="small"></ul>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

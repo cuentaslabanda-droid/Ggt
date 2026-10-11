@@ -1,0 +1,11 @@
+{
+  "name": "Jamón serrano (casero)",
+  "description": "Pieza entera de 8-12 kg. El salado dura ~1 día por kg: ajusta 'days' de la primera fase al peso de tu jamón. Entre el salado y el reposo hay que lavar y secar la pieza (fuera de la cámara).",
+  "phases": [
+    {"name": "Salado", "days": 10, "temp_c": 3, "rh": 88, "fan_duty": 15},
+    {"name": "Post-salado / asentamiento", "days": 45, "temp_c": 4, "rh": 82, "fan_duty": 25},
+    {"name": "Secado", "days": 60, "temp_c": 12, "rh": 76, "fan_duty": 35, "ramp_days": 21},
+    {"name": "Secado final", "days": 60, "temp_c": 15, "rh": 72, "fan_duty": 35, "ramp_days": 14},
+    {"name": "Maduración (bodega)", "days": 180, "temp_c": 17, "rh": 70, "fan_duty": 25, "ramp_days": 14}
+  ]
+}
