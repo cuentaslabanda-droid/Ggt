@@ -229,7 +229,7 @@ footer { font-size: 12.5px; color: var(--ink-2); font-family: var(--mono); }
       <div><span>Equipo</span><b>Midea MDRT210CCNLS</b></div>
       <div><span>Consigna</span><b>4 °C · 76–88 %HR</b></div>
       <div><span>Alarma</span><b>&gt; 7 °C</b></div>
-      <div><span>Revisión</span><b>R2 · con fotos</b></div>
+      <div><span>Revisión</span><b>R3 · con medidas</b></div>
     </div>
   </header>
 
@@ -240,7 +240,7 @@ footer { font-size: 12.5px; color: var(--ink-2); font-family: var(--mono); }
     <a href="#cableado">4 · Cableado</a>
     <a href="#materiales">5 · Materiales</a>
     <a href="#montaje">6 · Montaje</a>
-    <a href="#fotos">7 · Medidas que faltan</a>
+    <a href="#fotos">7 · Medidas</a>
   </nav>
 
   <!-- 1 · PLAN -->
@@ -260,7 +260,7 @@ footer { font-size: 12.5px; color: var(--ink-2); font-family: var(--mono); }
         <h3>Siguiente (físico, en este orden)</h3>
         <ol class="steps">
           <li><div><b>Fotos del interior y modelo exacto</b><br><span class="small muted">Midea MDRT210CCNLS, descongelación manual (hoja 2).</span></div><span class="chip done">hecho</span></li>
-          <li><div><b>Medidas interiores con flexómetro</b><br><span class="small muted">Cuatro medidas para cerrar el modelo (hoja 7).</span></div><span class="chip next">ahora</span></li>
+          <li><div><b>Medidas interiores con flexómetro</b><br><span class="small muted">Alto, ancho y alturas tomadas; falta el fondo (hoja 7).</span></div><span class="chip next">casi</span></li>
           <li><div><b>Cambiar repisas de vidrio por rejillas</b><br><span class="small muted">Lo que más mejora el aire hoy, sin electrónica (hoja 2).</span></div><span class="chip next">ahora</span></li>
           <li><div><b>Diseño final del flujo de aire</b><br><span class="small muted">Ventilador, sensores, humidificador y niveles de colgado.</span></div><span class="chip next">con medidas</span></li>
           <li><div><b>Compras</b><br><span class="small muted">Lista en la hoja 4.</span></div><span class="chip todo">pendiente</span></li>
@@ -327,7 +327,7 @@ footer { font-size: 12.5px; color: var(--ink-2); font-family: var(--mono); }
           <label class="field">Fondo <input id="D" type="number" min="40" max="90" step="0.5"></label>
         </fieldset>
         <fieldset>
-          <legend>Interior (ajustado a 163 L + 41 L)</legend>
+          <legend>Interior (alto y ancho medidos)</legend>
           <label class="field">Alto congelador <input id="freezerH" type="number" min="10" max="60" step="0.5"></label>
           <label class="field">Techo <input id="topWall" type="number" min="2" max="15" step="0.5"></label>
           <label class="field">Divisor <input id="divider" type="number" min="2" max="15" step="0.5"></label>
@@ -353,6 +353,7 @@ footer { font-size: 12.5px; color: var(--ink-2); font-family: var(--mono); }
           <label class="field">Peso (kg) <input id="kg" type="number" min="1" max="20" step="0.5"></label>
           <label class="field">Gancho + cuerda <input id="hook" type="number" min="2" max="25" step="0.5"></label>
           <label class="field">Separación aire <input id="gap" type="number" min="2" max="15" step="0.5"></label>
+          <label class="field">Libre abajo (bandeja) <input id="tray" type="number" min="2" max="30" step="1"></label>
           <label class="field">Niveles
             <select id="shelves"><option value="rejilla">Rejilla</option><option value="vidrio">Vidrio</option></select>
           </label>
@@ -370,9 +371,10 @@ footer { font-size: 12.5px; color: var(--ink-2); font-family: var(--mono); }
             <label><input type="checkbox" id="lySensors" checked> Sensores</label>
             <label><input type="checkbox" id="lyGear" checked> Equipos</label>
             <label><input type="checkbox" id="lyDims" checked> Cotas</label>
+            <label><input type="checkbox" id="lyNow" checked> Alturas de hoy</label>
           </div>
         </fieldset>
-        <button class="reset" type="button" id="resetBtn">Volver a la ficha del Midea</button>
+        <button class="reset" type="button" id="resetBtn">Volver a las medidas tomadas</button>
       </div>
 
       <div style="display:grid;gap:16px;min-width:0">
@@ -387,7 +389,7 @@ footer { font-size: 12.5px; color: var(--ink-2); font-family: var(--mono); }
           </figure>
         </div>
         <div class="results" id="results"></div>
-        <div id="verdict"></div>
+        <div id="verdict" style="display:grid;gap:10px"></div>
         <ul class="notes">
           <li><b>Aire.</b> El ventilador, arriba al frente, empuja el aire hacia la placa fría del fondo. El aire se enfría, baja pegado a la pared trasera y vuelve por el suelo hacia la puerta. Las piezas quedan en el centro del bucle y reciben aire suave por todas sus caras, sin chorro directo. Con repisas de vidrio el bucle no existe: por eso van rejillas.</li>
           <li><b>S1 arriba</b> mide el aire mezclado lejos de la entrada de frío. <b>S2 medio</b> va en el hueco entre los dos niveles, sin tocar piezas. <b>S3 abajo</b> va al frente, donde el aire se estanca y la humedad es mayor. Si difieren más de 1,5 °C o 6 %HR, el ventilador sube a refuerzo.</li>
@@ -546,18 +548,25 @@ footer { font-size: 12.5px; color: var(--ink-2); font-family: var(--mono); }
 
   <!-- 6 · PHOTOS -->
   <section class="sheet" id="fotos">
-    <div class="sheet-head"><h2>Medidas que faltan</h2><span class="sheet-no">HOJA 7 / 7</span></div>
-    <p>Con la foto y la ficha ya tengo el modelo y los volúmenes. Para cerrar el plano faltan estas medidas, tomadas con flexómetro por dentro del compartimento del refrigerador:</p>
-    <div class="photos">
-      <div><b>1. Ancho interior</b><span class="small muted">De pared a pared, a media altura.</span></div>
-      <div><b>2. Fondo interior</b><span class="small muted">De la pared trasera al borde de la puerta cerrada: con las repisas de la puerta y sin ellas.</span></div>
-      <div><b>3. Alto interior</b><span class="small muted">Del suelo al techo del compartimento, por delante y por detrás.</span></div>
-      <div><b>4. Escalón del compresor</b><span class="small muted">Alto y fondo del escalón del suelo al fondo, si lo hay.</span></div>
-      <div><b>5. Placa fría</b><span class="small muted">Hasta dónde baja la escarcha en la pared trasera.</span></div>
-      <div><b>6. Rieles de las repisas</b><span class="small muted">Altura de cada riel desde el suelo: ahí van las barras de colgado.</span></div>
-      <div><b>7. Tus piezas</b><span class="small muted">Largo, diámetro y peso de una pierna típica, y el largo de cuerda con que la cuelgas.</span></div>
-      <div><b>8. Foto de la pared trasera</b><span class="small muted">Sin piezas, para ver la placa fría completa y el desagüe.</span></div>
+    <div class="sheet-head"><h2>Medidas</h2><span class="sheet-no">HOJA 7 / 7 · cm desde el suelo del compartimento</span></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Medida</th><th style="text-align:right">Valor</th><th>Fuente</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td>Exterior (alto × ancho × fondo)</td><td class="num">143 × 55 × 55</td><td class="muted">ficha Midea</td><td><span class="chip done">dato</span></td></tr>
+          <tr><td>Alto interior del refrigerador</td><td class="num">≈ 100</td><td class="muted">foto del techo</td><td><span class="chip done">medido</span></td></tr>
+          <tr><td>Ancho interior</td><td class="num">≈ 48</td><td class="muted">foto horizontal</td><td><span class="chip done">medido</span></td></tr>
+          <tr><td>Borde de la cesta inferior</td><td class="num">≈ 21</td><td class="muted">foto de la fila de abajo</td><td><span class="chip done">medido</span></td></tr>
+          <tr><td>Barra negra (fila de abajo)</td><td class="num">≈ 40,5</td><td class="muted">foto de la fila de abajo</td><td><span class="chip done">medido</span></td></tr>
+          <tr><td>Repisa de la que cuelga la fila de arriba</td><td class="num">≈ 63</td><td class="muted">cruce de dos fotos</td><td><span class="chip next">confirmar</span></td></tr>
+          <tr><td>Fondo interior (pared trasera → puerta)</td><td class="num">≈ 42</td><td class="muted">estimado</td><td><span class="chip bad">falta</span></td></tr>
+          <tr><td>Lo que entran las repisas de la puerta</td><td class="num">≈ 10</td><td class="muted">estimado de la foto</td><td><span class="chip bad">falta</span></td></tr>
+          <tr><td>Escalón del compresor al fondo (alto × fondo)</td><td class="num">≈ 15 × 14</td><td class="muted">estimado</td><td><span class="chip bad">falta</span></td></tr>
+          <tr><td>Pierna típica (largo × diámetro)</td><td class="num">≈ 24 × 16</td><td class="muted">estimado de las fotos</td><td><span class="chip bad">falta</span></td></tr>
+        </tbody>
+      </table>
     </div>
+    <p class="small muted">Las medidas de las fotos tienen algo de perspectiva: dan ±2 cm. Para cerrar el modelo faltan el fondo, cuánto entran las repisas de la puerta, si hay escalón del compresor al fondo (debajo de la cesta) y una pierna medida a mano (largo, diámetro y peso).</p>
   </section>
 
   <footer>Repositorio: cuentaslabanda-droid/ggt · rama claude/ham-curing-system-ls8hp9 · docs/plano-camara.html</footer>
@@ -566,20 +575,28 @@ footer { font-size: 12.5px; color: var(--ink-2); font-family: var(--mono); }
 <script>
 "use strict";
 // Midea MDRT210CCNLS: 1430 x 550 x 550 mm, 163 L fresh + 41 L freezer, manual
-// defrost (cold plate). Interior split chosen so the volumes match the label.
+// defrost (cold plate). Measured (R3): fresh compartment ~100 cm high and
+// ~48 cm wide. Depth is still estimated.
 const DEFAULTS = {
-  H: 143, W: 55, D: 55, freezerH: 23, topWall: 8, divider: 6, sideWall: 5, backWall: 6, doorT: 7,
-  bins: 8, humpH: 15, humpD: 14, base: 9, bottomWall: 5, cooling: "frost",
-  piece: "pierna", L: 30, PW: 17, PT: 15, kg: 3, hook: 8, gap: 4, shelves: "rejilla", cfm: 32, duty: 30,
+  H: 143, W: 55, D: 55, freezerH: 22, topWall: 3, divider: 5, sideWall: 3.5, backWall: 6, doorT: 7,
+  bins: 10, humpH: 15, humpD: 14, base: 8, bottomWall: 5, cooling: "frost",
+  piece: "pierna", L: 24, PW: 17, PT: 15, kg: 2.5, hook: 5, gap: 3, tray: 6, shelves: "rejilla", cfm: 32, duty: 30,
 };
+// Heights measured from the compartment floor in the photos (R3).
+const CURRENT = [
+  { h: 21, label: "cesta" },
+  { h: 40.5, label: "barra negra" },
+  { h: 63, label: "repisa (ganchos)" },
+];
 const PIECES = {
-  pierna: { L: 30, PW: 17, PT: 15, kg: 3, hook: 8 },
+  pierna: { L: 24, PW: 17, PT: 15, kg: 2.5, hook: 5 },
   paleta: { L: 58, PW: 22, PT: 13, kg: 6, hook: 6 },
   jamon: { L: 75, PW: 28, PT: 16, kg: 10, hook: 6 },
 };
-const ROD = 3, TRAY = 6, CLEAR = 2;
-const NUM_KEYS = ["H","W","D","freezerH","topWall","divider","sideWall","backWall","doorT","bins","humpH","humpD","base","L","PW","PT","kg","hook","gap","cfm","duty"];
-const STORE = "plano-camara-v2";
+const ROD = 3, CLEAR = 2;
+let TRAY = 6; // free space kept at the bottom for the drip tray (input "tray")
+const NUM_KEYS = ["H","W","D","freezerH","topWall","divider","sideWall","backWall","doorT","bins","humpH","humpD","base","L","PW","PT","kg","hook","gap","tray","cfm","duty"];
+const STORE = "plano-camara-v3";
 
 let P = { ...DEFAULTS };
 try { const s = JSON.parse(localStorage.getItem(STORE) || "null"); if (s) P = { ...DEFAULTS, ...s }; } catch (e) {}
@@ -605,6 +622,7 @@ function fitCount(span, size, gap) {
 }
 
 function geometry(p) {
+  TRAY = p.tray;
   const g = {};
   g.innerW = p.W - 2 * p.sideWall;
   g.innerD = p.D - p.backWall - p.doorT;
@@ -619,9 +637,13 @@ function geometry(p) {
   // Hanging levels: each needs rod + hook/string + piece + clearance.
   g.levelNeed = ROD + p.hook + p.L + CLEAR;
   g.levels = Math.max(0, Math.min(4, Math.floor((g.freshH - TRAY) / g.levelNeed)));
-  g.levelH = g.levels ? (g.freshH - TRAY) / g.levels : g.freshH - TRAY;
+  // Space left above the hanging levels becomes a wire rack for lying pieces
+  // (they need turning, but nothing is wasted).
+  const leftover = g.freshH - TRAY - g.levels * g.levelNeed;
+  g.rackH = g.levels && leftover >= p.PT + 5 ? leftover : 0;
+  g.levelH = g.levels ? (g.freshH - TRAY - g.rackH) / g.levels : g.freshH - TRAY;
   g.fitsHeight = g.levels > 0;
-  g.rodY = (i) => g.y0 + i * g.levelH + ROD;
+  g.rodY = (i) => g.y0 + g.rackH + i * g.levelH + ROD;
 
   const best = (depth) => [
     { name: "de canto", across: p.PT, deep: p.PW },
@@ -637,10 +659,17 @@ function geometry(p) {
   // humidifier sits: if the pieces reach that height they hang in front of it.
   const lowest = Math.max(0, g.levels - 1);
   g.lowBottom = g.rodY(lowest) + p.hook + p.L;
-  g.lowInFront = p.humpH > 0 && g.lowBottom > g.y1 - p.humpH - 10;
+  // The humidifier takes one corner of the step, so only pieces that would
+  // hang into the step itself (more than their rounded tip) move forward.
+  g.lowInFront = p.humpH > 0 && g.lowBottom - (g.y1 - p.humpH) > 0.25 * p.L;
   g.lowLayout = g.lowInFront ? best(g.innerD - p.bins - p.humpD) : g.layout;
   g.layoutOf = (i) => (i === lowest ? g.lowLayout : g.layout);
-  g.count = g.levels ? g.layout.n * (g.levels - 1) + g.lowLayout.n : 0;
+  g.hanging = g.levels ? g.layout.n * (g.levels - 1) + g.lowLayout.n : 0;
+  // Rack: pieces lying lengthwise front-to-back, side by side.
+  g.rackCols = g.rackH ? fitCount(g.innerW, p.PW, p.gap) : 0;
+  g.rackRows = g.rackH ? Math.min(2, fitCount(g.innerD - p.bins, p.L, p.gap)) : 0;
+  g.rack = g.rackCols * g.rackRows;
+  g.count = g.hanging + g.rack;
 
   g.meatL = (p.kg / 1.05) * g.count;
   g.airL = g.freshL - g.meatL - 3;
@@ -691,7 +720,7 @@ function sensorDot(svg, x, y, label, right = true) {
 
 function layers() {
   return { hams: $("lyHams").checked, air: $("lyAir").checked, sensors: $("lySensors").checked,
-           gear: $("lyGear").checked, dims: $("lyDims").checked };
+           gear: $("lyGear").checked, dims: $("lyDims").checked, now: $("lyNow").checked };
 }
 
 function frame(svg, w, p) {
@@ -721,6 +750,18 @@ function drawFront(p, g, ly) {
   if (ly.gear) {
     el("rect", { x: R - 13, y: g.y1 - p.humpH - 11, width: 11, height: 10, class: "v-hum", "stroke-width": .35, "stroke-dasharray": "1 .6" }, svg);
     txt(svg, R - 7.5, g.y1 - p.humpH - 12, "humid. (fondo)", "v-text-2", 1.5, "middle");
+  }
+  if (g.rackH) {
+    const yr = g.y0 + g.rackH - 1;
+    el("line", { x1: L, y1: yr, x2: R, y2: yr, class: "v-shelf", "stroke-width": .5, "stroke-dasharray": "1 .7" }, svg);
+    if (ly.hams) {
+      const groupW = g.rackCols * p.PW + (g.rackCols - 1) * p.gap;
+      for (let c = 0; c < g.rackCols; c++) {
+        const cx = L + (g.innerW - groupW) / 2 + p.PW / 2 + c * (p.PW + p.gap);
+        el("ellipse", { cx, cy: yr - p.PT / 2 - .3, rx: p.PW / 2, ry: p.PT / 2, class: "v-ham", "stroke-width": .4 }, svg);
+      }
+      txt(svg, L + 1, yr + 2.2, "rejilla: piezas acostadas", "v-text-2", 1.5);
+    }
   }
   const n = levelsToDraw(g);
   for (let i = 0; i < n; i++) {
@@ -768,10 +809,20 @@ function drawFront(p, g, ly) {
     sensorDot(svg, R - 2.6, g.y1 - TRAY - 3, "S3", false);
   }
 
+  if (ly.now) {
+    for (const c of CURRENT) {
+      const y = g.y1 - c.h;
+      el("line", { x1: L, y1: y, x2: p.W + .6, y2: y, class: "v-dim", "stroke-width": .3, "stroke-dasharray": "1.2 .8" }, svg);
+      txt(svg, p.W + 1, y + .7, `${fmt(c.h, 1)}`, "v-text", 1.8);
+      txt(svg, p.W + 1, y + 2.7, c.label, "v-text-2", 1.4);
+    }
+    txt(svg, p.W + 1, g.y0 - 1.5, "hoy (cm", "v-text-2", 1.4);
+    txt(svg, p.W + 1, g.y0 + .3, "del suelo)", "v-text-2", 1.4);
+  }
   if (ly.dims) {
     dim(svg, 0, p.H + 6, p.W, p.H + 6, `${fmt(p.W, 1)}`, 4);
-    dim(svg, -6, 0, -6, p.H, `${fmt(p.H, 1)}`, -2, true);
-    dim(svg, p.W + 5, g.y0, p.W + 5, g.y1, `${fmt(g.freshH, 1)} útil`, 3.4, true);
+    dim(svg, -9, 0, -9, p.H, `${fmt(p.H, 1)}`, -2, true);
+    dim(svg, -3.5, g.y0, -3.5, g.y1, `${fmt(g.freshH, 1)} útil`, -1.2, true);
     dim(svg, L, g.y1 + 3.5, R, g.y1 + 3.5, `${fmt(g.innerW, 1)} interior`, -1.1);
   }
   $("capFront").textContent = `${fmt(p.W, 0)} × ${fmt(p.H, 0)} cm`;
@@ -810,6 +861,18 @@ function drawSide(p, g, ly) {
 
   const n = levelsToDraw(g);
   const front = F + p.bins, back = B;
+  if (g.rackH) {
+    const yr = g.y0 + g.rackH - 1;
+    el("line", { x1: front + .5, y1: yr, x2: back - .5, y2: yr, class: "v-shelf", "stroke-width": .5, "stroke-dasharray": "1 .7" }, svg);
+    if (ly.hams) {
+      const rows = Math.max(1, g.rackRows);
+      const groupD = rows * p.L + (rows - 1) * p.gap;
+      for (let r = 0; r < rows; r++) {
+        const cx = front + (back - front - groupD) / 2 + p.L / 2 + r * (p.L + p.gap);
+        el("ellipse", { cx, cy: yr - p.PT / 2 - .3, rx: p.L / 2, ry: p.PT / 2, class: "v-ham", "stroke-width": .4 }, svg);
+      }
+    }
+  }
   for (let i = 0; i < n; i++) {
     const yRod = g.rodY(i);
     if (i > 0) {
@@ -882,8 +945,8 @@ function results(p, g) {
   const [one, many, the] = names[p.piece] || names.custom;
   const items = [
     { k: "Volumen interior", v: `${fmt(g.totalL, 0)} <small>L · ${fmt(g.totalL / 28.317, 1)} ft³</small>`, n: `refrigerador ${fmt(g.freshL, 0)} L · congelador ${fmt(g.freezerL, 0)} L (ficha: 163 + 41)` },
-    { k: "Niveles de colgado", v: `${g.levels} <small>× ${fmt(g.levelH, 0)} cm</small>`, n: `cada nivel necesita ${fmt(g.levelNeed, 0)} cm (barra, cuerda, pieza)`, cls: g.levels ? "good" : "bad" },
-    { k: "Capacidad con aire", v: `${g.count} <small>${g.count === 1 ? one : many}</small>`, n: g.levels ? `${g.layout.cols} × ${g.layout.rows} por nivel, ${g.layout.name}` + (g.lowInFront && g.lowLayout.n !== g.layout.n ? `; abajo ${g.lowLayout.n} (delante del compresor)` : "") + `, ${fmt(p.gap, 0)} cm entre piezas` : "no cabe ni un nivel", cls: g.count ? "good" : "bad" },
+    { k: "Niveles de colgado", v: `${g.levels} <small>× ${fmt(g.levelH, 0)} cm</small>`, n: `cada nivel necesita ${fmt(g.levelNeed, 0)} cm (barra, cuerda, pieza)` + (g.rackH ? `; arriba sobran ${fmt(g.rackH, 0)} cm para una rejilla` : ""), cls: g.levels ? "good" : "bad" },
+    { k: "Capacidad con aire", v: `${g.count} <small>${g.count === 1 ? one : many}</small>`, n: g.levels ? `${g.hanging} colgadas (${g.layout.cols} × ${g.layout.rows} por nivel)` + (g.lowInFront && g.lowLayout.n !== g.layout.n ? `, abajo ${g.lowLayout.n}` : "") + (g.rack ? ` + ${g.rack} acostadas en rejilla` : "") + `, ${fmt(p.gap, 0)} cm de aire` : "no cabe ni un nivel", cls: g.count ? "good" : "bad" },
     { k: "Carga", v: `${fmt(g.count * p.kg, 1)} <small>kg</small>`, n: `merma objetivo 33 %: ${fmt(g.count * p.kg * 0.33, 1)} kg de agua que sacar` },
     { k: "Aire libre", v: `${fmt(Math.max(0, g.airL), 0)} <small>L</small>`, n: "descontando piezas, bandeja y equipos" },
     { k: "Recambios por hora", v: p.shelves === "rejilla" ? `${fmt(g.ach, 0)} <small>/h</small>` : `— <small>bloqueado</small>`, n: p.shelves === "rejilla" ? `≈ ${fmt(g.flow, 1)} m³/h al ${fmt(p.duty, 0)} %` : "con repisas de vidrio el aire no circula entre niveles", cls: p.shelves === "rejilla" ? "" : "bad" },
@@ -899,9 +962,20 @@ function results(p, g) {
   } else {
     const extra = p.bins > 0 && fitCount(g.innerD, g.layout.deep, p.gap) > g.layout.rows
       ? " Quitando las repisas de la puerta cabe otra fila." : "";
-    html = `<div class="callout ok"><b>Caben ${g.count} ${g.count === 1 ? one : many}</b> en ${g.levels} ${g.levels === 1 ? "nivel" : "niveles"} con ${fmt(p.gap, 0)} cm de aire alrededor.${extra}` +
+    html = `<div class="callout ok"><b>Caben ${g.count} ${g.count === 1 ? one : many}</b> con ${fmt(p.gap, 0)} cm de aire alrededor: ${g.hanging} colgadas en ${g.levels} ${g.levels === 1 ? "nivel" : "niveles"}` + (g.rack ? ` y ${g.rack} acostadas en la rejilla de arriba (voltearlas cada 2–3 días)` : "") + `.${extra}` +
       (p.shelves === "vidrio" ? " <b>Con repisas de vidrio el aire no pasa de un nivel a otro:</b> cámbialas por rejillas." : "") + `</div>`;
   }
+  // Compare layouts with the same pieces
+  const scen = [
+    ["Con repisas de puerta", geometry({ ...p, bins: p.bins })],
+    ["Sin repisas de puerta", geometry({ ...p, bins: 0 })],
+    ["Sin repisas y 2 cm de aire (mínimo)", geometry({ ...p, bins: 0, gap: 2 })],
+    ["Sin repisas y 5 cm de aire (holgado)", geometry({ ...p, bins: 0, gap: 5 })],
+  ];
+  geometry(p); // restore TRAY for the drawing
+  html += `<div class="tablewrap"><table><thead><tr><th>Escenario</th><th>Colgadas</th><th>Acostadas</th><th style="text-align:right">${many[0].toUpperCase() + many.slice(1)}</th></tr></thead><tbody>` +
+    scen.map(([name, s]) => `<tr><td>${name}</td><td class="num" style="text-align:left">${s.hanging}</td><td class="num" style="text-align:left">${s.rack}</td><td class="num">${s.count}</td></tr>`).join("") +
+    `</tbody></table></div><p class="small muted">Hoy hay unas 16 piezas contando las de la puerta, pero pegadas y sin aire entre niveles. Con ${fmt(p.gap, 0)} cm de separación caben menos, y se secan parejo.</p>`;
   $("verdict").innerHTML = html;
 }
 
@@ -936,7 +1010,7 @@ $("piece").addEventListener("change", (e) => {
   if (PIECES[P.piece]) Object.assign(P, PIECES[P.piece]);
   syncInputs(); render();
 });
-for (const id of ["lyHams", "lyAir", "lySensors", "lyGear", "lyDims"]) $(id).addEventListener("change", render);
+for (const id of ["lyHams", "lyAir", "lySensors", "lyGear", "lyDims", "lyNow"]) $(id).addEventListener("change", render);
 $("resetBtn").addEventListener("click", () => { P = { ...DEFAULTS }; syncInputs(); render(); });
 
 const BOM = [
