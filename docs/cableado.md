@@ -61,7 +61,10 @@ El SHT31 sólo tiene dos direcciones I²C, por eso el tercero va en otro cable S
 - Corta la fase (marrón/negro) del cable de la nevera con el relé; el neutro y la tierra van directos.
 - El compresor tiene un pico de arranque de 5-10 veces su consumo. Usa un **relé de al menos 10 A
   (mejor uno de 30 A) o un contactor**. Los módulos de relé baratos de 10 A aguantan una nevera
-  doméstica, pero sus contactos se gastan antes.
+  doméstica, pero sus contactos se gastan antes. El Midea MDRT210CCNLS consume 1 A (150 W) a
+  115 V: un relé de 10 A basta; uno de 30 A dura más.
+- Es de **descongelación manual** (placa fría en la pared trasera): con el relé apagando el
+  compresor la placa no se descongela sola. Quita la escarcha cuando pase de ~5 mm.
 - El firmware protege el compresor: mínimo 5 min apagado entre arranques (también tras un corte de
   luz) y mínimo 2 min encendido.
 
